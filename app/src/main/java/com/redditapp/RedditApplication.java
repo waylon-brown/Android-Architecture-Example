@@ -3,6 +3,8 @@ package com.redditapp;
 import android.app.Application;
 import android.util.Log;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import timber.log.Timber;
 
 public class RedditApplication extends Application {
@@ -11,11 +13,17 @@ public class RedditApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        LeakCanary.install(this);
+
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
             Timber.plant(new CrashReportingTree());
         }
+
     }
 
     /** A tree which logs important information for crash reporting. */
