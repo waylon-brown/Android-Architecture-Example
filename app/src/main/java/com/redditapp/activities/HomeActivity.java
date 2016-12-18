@@ -20,6 +20,7 @@ import com.redditapp.databinding.ActivityHomeBinding;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -27,17 +28,10 @@ public class HomeActivity extends AppCompatActivity
     /**
      * Butterknife
      */
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
-
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.drawer_layout) DrawerLayout drawer;
+    @BindView(R.id.fab) FloatingActionButton fab;
+    @BindView(R.id.nav_view) NavigationView navigationView;
 
     /**
      * Data binding
@@ -52,6 +46,8 @@ public class HomeActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
         setupViews(binding);
+
+        Timber.d("Home activity started");
     }
 
     private void setupViews(ActivityHomeBinding binding) {
