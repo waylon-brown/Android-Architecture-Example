@@ -47,7 +47,7 @@ public class HomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         setupViews(binding);
 
-        Timber.d("Home activity started");
+        Timber.d("Home activity started!");
     }
 
     private void setupViews(ActivityHomeBinding binding) {
