@@ -1,11 +1,11 @@
-package com.redditapp.dagger;
+package com.redditapp;
 
 import com.redditapp.RedditApplication;
 import com.redditapp.ui.ActivityHierarchyServer;
 import com.redditapp.ui.ViewContainer;
 import com.redditapp.ui.screens.home.HomeActivity;
 
-public interface RedditAppGraph {
+public interface ApplicationGraph {
     void inject(RedditApplication app);
     void inject(HomeActivity activity);
 //    ViewContainer viewContainer();

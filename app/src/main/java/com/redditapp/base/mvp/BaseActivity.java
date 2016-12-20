@@ -8,18 +8,15 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 
 import com.redditapp.RedditApplication;
-import com.redditapp.dagger.RedditAppComponent;
+import com.redditapp.ApplicationComponent;
+import com.redditapp.base.dagger.BaseComponent;
+import com.redditapp.base.dagger.HasComponent;
 
 import java.util.UUID;
 
-import butterknife.ButterKnife;
-
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity<T extends BaseComponent> extends AppCompatActivity implements HasComponent<T>, BaseView {
 
     private static final String BF_UNIQUE_KEY = BaseActivity.class.getName() + ".unique.key";
-
-//    @Inject
-//    ViewContainer viewContainer;
 
     protected ObservableField<String> toolbarTitle = new ObservableField<>();
 
@@ -41,8 +38,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         RedditApplication app = RedditApplication.get(this);
-        onCreateComponent(app.getComponent());
-        Registry.add(this, 0, getPresenter()); //viewId(), getPresenter());
+        inject();
+//        Registry.add(this, 0, getPresenter()); //viewId(), getPresenter());
 
         // Data binding
         bindUi();
@@ -72,7 +69,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * Derived activity is responsible to create and store it's component.
      */
-    protected abstract void onCreateComponent(RedditAppComponent redditComponent);
     protected abstract void bindUi();
     protected abstract void setupViews();
     protected abstract BasePresenter<? extends BaseView> getPresenter();

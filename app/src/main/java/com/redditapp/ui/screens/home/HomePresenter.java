@@ -1,21 +1,18 @@
 package com.redditapp.ui.screens.home;
 
 import com.redditapp.base.mvp.BasePresenter;
-import com.redditapp.base.navigation.activity.ActivityScreenSwitcher;
 
 import javax.inject.Inject;
 
 public class HomePresenter extends BasePresenter<HomeActivity> {
 
-    private final ActivityScreenSwitcher screenSwitcher;
-
-//    private Subscription request;
-//    private Subscription clicks;
+//    @Inject
+//    public HomePresenter(ActivityScreenSwitcher screenSwitcher) {
+//        this.screenSwitcher = screenSwitcher;
+//    }
 
     @Inject
-    public HomePresenter(ActivityScreenSwitcher screenSwitcher) {
-        this.screenSwitcher = screenSwitcher;
-    }
+    public HomePresenter() {}
 
     @Override
     protected void onLoad() {

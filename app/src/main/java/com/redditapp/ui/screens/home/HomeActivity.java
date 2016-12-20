@@ -3,8 +3,8 @@ package com.redditapp.ui.screens.home;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,12 +14,10 @@ import android.view.MenuItem;
 
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
+import com.redditapp.base.dagger.ActivityModule;
+import com.redditapp.base.mvp.BaseActivity;
 import com.redditapp.base.mvp.BasePresenter;
 import com.redditapp.base.mvp.BaseView;
-import com.redditapp.dagger.DaggerRedditAppComponent;
-import com.redditapp.dagger.RedditAppComponent;
-import com.redditapp.base.mvp.BaseActivity;
-import com.redditapp.dagger.RedditAppModule;
 import com.redditapp.databinding.ActivityHomeBinding;
 
 import javax.inject.Inject;
@@ -27,24 +25,18 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, BaseView {
+public class HomeActivity extends BaseActivity<HomeComponent>
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-    /**
-     * Dagger
-     */
     @Inject HomePresenter presenter;
-    RedditAppComponent component;
+    HomeComponent component;
 
-    /**
-     * Butterknife
-     */
+    ActivityHomeBinding binding;
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.nav_view) NavigationView navigationView;
-
-    ActivityHomeBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,17 +109,28 @@ public class HomeActivity extends BaseActivity
     }
 
     /**
-     * BaseActivity implementations
+     * HasComponent implementations
      */
 
-    // TODO: replace with a HomeComponent
     @Override
-    protected void onCreateComponent(RedditAppComponent redditComponent) {
-        component = DaggerRedditAppComponent.builder()
-                .redditAppModule(new RedditAppModule(RedditApplication.get(this)))
-                .build();
-        component.inject(this);
+    public HomeComponent component() {
+        if (component == null) {
+            component = DaggerHomeComponent.builder()
+                    .applicationComponent(RedditApplication.get(this).getComponent())
+                    .activityModule(new ActivityModule(this))
+                    .build();
+        }
+        return component;
     }
+
+    @Override
+    public void inject() {
+        component().inject(this);
+    }
+
+    /**
+     * BaseActivity implementations
+     */
 
     @Override
     protected void bindUi() {

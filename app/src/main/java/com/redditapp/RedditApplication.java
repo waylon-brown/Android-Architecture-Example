@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.redditapp.dagger.RedditAppComponent;
 import com.redditapp.ui.ActivityHierarchyServer;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -13,10 +12,9 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class RedditApplication extends Application {
-    private RedditAppComponent component;
+    private ApplicationComponent component;
 
-    @Inject
-    ActivityHierarchyServer activityHierarchyServer;
+//    @Inject\ activityHierarchyServer;
 
     @Override
     public void onCreate() {
@@ -34,16 +32,15 @@ public class RedditApplication extends Application {
         }
 
         buildComponentAndInject();
-
-        registerActivityLifecycleCallbacks(activityHierarchyServer);
+//        registerActivityLifecycleCallbacks(activityHierarchyServer);
     }
 
     public void buildComponentAndInject() {
-        component = RedditAppComponent.Initializer.init(this);
+        component = ApplicationComponent.Initializer.init(this);
         component.inject(this);
     }
 
-    public RedditAppComponent getComponent() {
+    public ApplicationComponent getComponent() {
         return component;
     }
 
