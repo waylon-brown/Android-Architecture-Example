@@ -4,10 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.redditapp.ui.ActivityHierarchyServer;
+import com.redditapp.dagger.application.ApplicationComponent;
 import com.squareup.leakcanary.LeakCanary;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 

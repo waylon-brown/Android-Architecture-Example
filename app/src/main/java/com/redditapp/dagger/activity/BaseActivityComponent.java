@@ -1,9 +1,8 @@
-package com.redditapp.base.dagger;
+package com.redditapp.dagger.activity;
 
 import android.app.Activity;
 
-import com.redditapp.ApplicationComponent;
-import com.redditapp.PerActivity;
+import com.redditapp.dagger.application.ApplicationComponent;
 
 import dagger.Component;
 

@@ -1,6 +1,8 @@
-package com.redditapp;
+package com.redditapp.dagger.application;
 
 import android.app.Application;
+
+import com.redditapp.RedditApplication;
 
 import javax.inject.Singleton;
 

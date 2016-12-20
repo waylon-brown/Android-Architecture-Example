@@ -1,8 +1,9 @@
-package com.redditapp;
+package com.redditapp.dagger.application;
 
 import android.app.Application;
 
-import com.redditapp.ui.ActivityHierarchyServer;
+import com.redditapp.DaggerApplicationComponent;
+import com.redditapp.RedditApplication;
 import com.redditapp.ui.screens.home.HomeActivity;
 
 import javax.inject.Singleton;

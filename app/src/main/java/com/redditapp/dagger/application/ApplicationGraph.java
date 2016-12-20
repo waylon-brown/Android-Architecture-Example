@@ -1,4 +1,4 @@
-package com.redditapp;
+package com.redditapp.dagger.application;
 
 import com.redditapp.RedditApplication;
 import com.redditapp.ui.ActivityHierarchyServer;

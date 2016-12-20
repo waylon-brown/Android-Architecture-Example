@@ -1,4 +1,4 @@
-package com.redditapp.base.dagger;
+package com.redditapp.dagger.activity;
 
 /**
  * Used with {@link HasComponent}

@@ -1,4 +1,4 @@
-package com.redditapp.base.dagger;
+package com.redditapp.dagger.activity;
 
 /**
  * Created by Waylon on 12/20/2016.

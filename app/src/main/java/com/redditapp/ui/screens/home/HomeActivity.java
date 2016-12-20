@@ -14,7 +14,7 @@ import android.view.MenuItem;
 
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
-import com.redditapp.base.dagger.ActivityModule;
+import com.redditapp.dagger.activity.ActivityModule;
 import com.redditapp.base.mvp.BaseActivity;
 import com.redditapp.base.mvp.BasePresenter;
 import com.redditapp.base.mvp.BaseView;

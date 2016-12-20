@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 
-import com.redditapp.base.dagger.BaseComponent;
-import com.redditapp.base.dagger.HasComponent;
+import com.redditapp.dagger.activity.BaseComponent;
+import com.redditapp.dagger.activity.HasComponent;
 
 import java.util.UUID;
 
