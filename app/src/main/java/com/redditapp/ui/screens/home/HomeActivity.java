@@ -1,13 +1,9 @@
 package com.redditapp.ui.screens.home;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ObservableField;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,7 +14,6 @@ import android.view.MenuItem;
 
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
-import com.redditapp.base.HasComponent;
 import com.redditapp.base.mvp.BasePresenter;
 import com.redditapp.base.mvp.BaseView;
 import com.redditapp.dagger.DaggerRedditAppComponent;
@@ -31,10 +26,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, HasComponent<RedditAppComponent>, BaseView {
+        implements NavigationView.OnNavigationItemSelectedListener, BaseView {
 
     /**
      * Dagger
@@ -120,11 +114,6 @@ public class HomeActivity extends BaseActivity
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public RedditAppComponent getComponent() {
-        return null;
     }
 
     /**
