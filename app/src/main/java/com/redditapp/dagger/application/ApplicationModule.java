@@ -1,8 +1,12 @@
 package com.redditapp.dagger.application;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.redditapp.RedditApplication;
+import com.redditapp.ActivityLifecycleObserver;
 
 import javax.inject.Singleton;
 
@@ -20,11 +24,23 @@ public final class ApplicationModule {
         this.app = app;
     }
 
-    /**
-     * Expose the application to the graph.
-     */
     @Provides @Singleton
     Application provideApplication() {
         return app;
+    }
+
+    @Provides @Singleton
+    Context provideContext() {
+        return app;
+    }
+
+    @Provides @Singleton
+    SharedPreferences provideSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    @Provides @Singleton
+    ActivityLifecycleObserver provideActivityHierarchyServer() {
+        return new ActivityLifecycleObserver();
     }
 }

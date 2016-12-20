@@ -2,7 +2,6 @@ package com.redditapp.dagger.application;
 
 import android.app.Application;
 
-import com.redditapp.DaggerApplicationComponent;
 import com.redditapp.RedditApplication;
 import com.redditapp.ui.screens.home.HomeActivity;
 
@@ -22,7 +21,6 @@ public interface ApplicationComponent {
 
     // Exported for child-components.
     Application application();
-//    ActivityHierarchyServer activityHierarchyServer();
 
     /**
      * An initializer that creates the graph from an application.

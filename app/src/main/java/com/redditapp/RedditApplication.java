@@ -7,12 +7,15 @@ import android.util.Log;
 import com.redditapp.dagger.application.ApplicationComponent;
 import com.squareup.leakcanary.LeakCanary;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class RedditApplication extends Application {
     private ApplicationComponent component;
 
-//    @Inject\ activityHierarchyServer;
+    @Inject
+    ActivityLifecycleObserver activityLifecycleObserver;
 
     @Override
     public void onCreate() {
@@ -30,7 +33,7 @@ public class RedditApplication extends Application {
         }
 
         buildComponentAndInject();
-//        registerActivityLifecycleCallbacks(activityHierarchyServer);
+        registerActivityLifecycleCallbacks(activityLifecycleObserver);
     }
 
     public void buildComponentAndInject() {

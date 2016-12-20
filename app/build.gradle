@@ -15,6 +15,9 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -55,7 +58,6 @@ android {
             //compile 'com.jakewharton:process-phoenix:1.1.1'
             compile 'com.jakewharton.timber:timber:4.4.0'
 
-            //LeakCanary
             debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
             releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
             testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
