@@ -7,14 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 
-import com.redditapp.RedditApplication;
-import com.redditapp.ApplicationComponent;
 import com.redditapp.base.dagger.BaseComponent;
 import com.redditapp.base.dagger.HasComponent;
 
 import java.util.UUID;
 
-public abstract class BaseActivity<T extends BaseComponent> extends AppCompatActivity implements HasComponent<T>, BaseView {
+public abstract class BaseActivity<T extends BaseComponent> extends AppCompatActivity
+        implements HasComponent<T>, BaseView {
 
     private static final String BF_UNIQUE_KEY = BaseActivity.class.getName() + ".unique.key";
 
@@ -36,10 +35,7 @@ public abstract class BaseActivity<T extends BaseComponent> extends AppCompatAct
         }
 
         super.onCreate(savedInstanceState);
-
-        RedditApplication app = RedditApplication.get(this);
         inject();
-//        Registry.add(this, 0, getPresenter()); //viewId(), getPresenter());
 
         // Data binding
         bindUi();
