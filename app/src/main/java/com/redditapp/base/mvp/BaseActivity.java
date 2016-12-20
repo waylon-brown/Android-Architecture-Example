@@ -1,14 +1,18 @@
 package com.redditapp.base.mvp;
 
+import android.databinding.ObservableField;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.redditapp.R;
 import com.redditapp.RedditApplication;
 import com.redditapp.dagger.RedditAppComponent;
 import com.redditapp.ui.ViewContainer;
@@ -23,6 +27,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 //    @Inject
 //    ViewContainer viewContainer;
+
+    protected ObservableField<String> toolbarTitle = new ObservableField<>();
 
     private String uniqueKey;
 
@@ -48,10 +54,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        }
         Registry.add(this, viewId(), presenter());
 
-        final LayoutInflater layoutInflater = getLayoutInflater();
+//        final LayoutInflater layoutInflater = getLayoutInflater();
 //        ViewGroup container = viewContainer.forActivity(this);
 //        layoutInflater.inflate(layoutId(), container);
-        setContentView(getLayoutId());
+        toolbarTitle.set(getString(getToolbarTitle()));
     }
 
     // No-op by default
@@ -78,7 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * Derived activity is responsible to create and store it's component.
      */
     protected abstract void onCreateComponent(RedditAppComponent redditComponent);
-    protected abstract @LayoutRes int getLayoutId();
     protected abstract BasePresenter<? extends BaseView> presenter();
     @IdRes protected abstract int viewId();
+    @StringRes protected abstract int getToolbarTitle();
 }

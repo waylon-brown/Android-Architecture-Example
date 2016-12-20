@@ -2,7 +2,9 @@ package com.redditapp.ui.screens.home;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableField;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.redditapp.dagger.DaggerRedditAppComponent;
 import com.redditapp.dagger.RedditAppComponent;
 import com.redditapp.base.mvp.BaseActivity;
 import com.redditapp.dagger.RedditAppModule;
+import com.redditapp.databinding.ActivityHomeBinding;
 
 import javax.inject.Inject;
 
@@ -33,9 +36,10 @@ import timber.log.Timber;
 public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, HasComponent<RedditAppComponent>, BaseView {
 
-    @Inject
-    HomePresenter presenter;
-
+    /**
+     * Dagger
+     */
+    @Inject HomePresenter presenter;
     RedditAppComponent component;
 
     /**
@@ -46,10 +50,12 @@ public class HomeActivity extends BaseActivity
     @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.nav_view) NavigationView navigationView;
 
+    ActivityHomeBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
@@ -65,16 +71,10 @@ public class HomeActivity extends BaseActivity
     }
 
     private void setupViews() {
-//        binding.appBarHome.setToolbarTitle(toolbarTitle);
-//        toolbarTitle.set(getString(R.string.home_activity_title));
+        binding.appBarHome.setToolbarTitle(toolbarTitle);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -158,11 +158,6 @@ public class HomeActivity extends BaseActivity
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_home;
-    }
-
-    @Override
     protected BasePresenter<? extends BaseView> presenter() {
         return presenter;
     }
@@ -171,6 +166,11 @@ public class HomeActivity extends BaseActivity
     @Override
     protected int viewId() {
         return 0;
+    }
+
+    @Override
+    protected int getToolbarTitle() {
+        return R.string.home_activity_title;
     }
 
     /**
