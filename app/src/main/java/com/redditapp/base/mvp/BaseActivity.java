@@ -57,6 +57,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        final LayoutInflater layoutInflater = getLayoutInflater();
 //        ViewGroup container = viewContainer.forActivity(this);
 //        layoutInflater.inflate(layoutId(), container);
+
+        // Data binding
+        bindUi();
         toolbarTitle.set(getString(getToolbarTitle()));
     }
 
@@ -87,4 +90,5 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract BasePresenter<? extends BaseView> presenter();
     @IdRes protected abstract int viewId();
     @StringRes protected abstract int getToolbarTitle();
+    protected abstract void bindUi();
 }

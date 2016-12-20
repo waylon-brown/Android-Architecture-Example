@@ -55,13 +55,11 @@ public class HomeActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
+
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         setupViews();
-
-        Timber.d("Home activity started");
     }
 
     @Override
@@ -71,8 +69,6 @@ public class HomeActivity extends BaseActivity
     }
 
     private void setupViews() {
-        binding.appBarHome.setToolbarTitle(toolbarTitle);
-
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
 
@@ -155,6 +151,12 @@ public class HomeActivity extends BaseActivity
                 .redditAppModule(new RedditAppModule(RedditApplication.get(this)))
                 .build();
         component.inject(this);
+    }
+
+    @Override
+    protected void bindUi() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
+        binding.appBarHome.setToolbarTitle(toolbarTitle);
     }
 
     @Override
