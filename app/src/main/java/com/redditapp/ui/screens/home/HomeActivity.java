@@ -57,7 +57,6 @@ public class HomeActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
-
         setSupportActionBar(toolbar);
         setupViews();
     }
@@ -66,18 +65,6 @@ public class HomeActivity extends BaseActivity
     protected void onDestroy() {
         component = null;
         super.onDestroy();
-    }
-
-    private void setupViews() {
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -160,14 +147,21 @@ public class HomeActivity extends BaseActivity
     }
 
     @Override
-    protected BasePresenter<? extends BaseView> presenter() {
-        return presenter;
+    protected void setupViews() {
+        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show());
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
-    // TODO: figure out
     @Override
-    protected int viewId() {
-        return 0;
+    protected BasePresenter<? extends BaseView> getPresenter() {
+        return presenter;
     }
 
     @Override
@@ -197,9 +191,5 @@ public class HomeActivity extends BaseActivity
     @Override
     public void showError(Throwable throwable) {
 
-    }
-
-    public interface Injector {
-        void inject(HomeActivity view);
     }
 }
