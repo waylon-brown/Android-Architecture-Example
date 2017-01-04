@@ -1,8 +1,9 @@
-package com.redditapp.ui.screens.home;
+ package com.redditapp.business.presenters;
 
-import com.redditapp.base.mvp.BasePresenter;
+ import com.redditapp.base.mvp.BasePresenter;
+ import com.redditapp.ui.HomeActivity;
 
-import javax.inject.Inject;
+ import javax.inject.Inject;
 
 public class HomePresenter extends BasePresenter<HomeActivity> {
 
@@ -50,13 +51,5 @@ public class HomePresenter extends BasePresenter<HomeActivity> {
         super.onDestroy();
 //        request.unsubscribe();
 //        clicks.unsubscribe();
-    }
-
-    public void refresh() {
-        // TODO: implement refreshing
-//        final GalleryView view = getView();
-//        if (view != null) {
-//            view.setRefreshed();
-//        }
     }
 }

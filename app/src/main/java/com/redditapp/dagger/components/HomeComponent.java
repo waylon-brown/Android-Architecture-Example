@@ -1,9 +1,10 @@
-package com.redditapp.ui.screens.home;
+package com.redditapp.dagger.components;
 
-import com.redditapp.dagger.application.ApplicationComponent;
-import com.redditapp.dagger.activity.PerActivity;
 import com.redditapp.dagger.activity.ActivityModule;
 import com.redditapp.dagger.activity.BaseActivityComponent;
+import com.redditapp.dagger.activity.PerActivity;
+import com.redditapp.dagger.application.ApplicationComponent;
+import com.redditapp.ui.HomeActivity;
 
 import dagger.Component;
 

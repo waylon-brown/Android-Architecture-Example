@@ -9,24 +9,24 @@ import timber.log.Timber;
 /** A "view server" adaptation which automatically hooks itself up to all activities. */
 public class ActivityLifecycleObserver implements Application.ActivityLifecycleCallbacks {
     @Override public void onActivityCreated(Activity activity, Bundle bundle) {
-        Timber.d("LIFECYCLE: %s onActivityCreated", activity.getClass().getName());
+        Timber.d("%s onActivityCreated", activity.getClass().getSimpleName());
     }
     @Override public void onActivityStarted(Activity activity) {
-        Timber.d("LIFECYCLE: %s onActivityStarted", activity.getClass().getName());
+        Timber.d("%s onActivityStarted", activity.getClass().getSimpleName());
     }
     @Override public void onActivityResumed(Activity activity) {
-        Timber.d("LIFECYCLE: %s onActivityResumed", activity.getClass().getName());
+        Timber.d("%s onActivityResumed", activity.getClass().getSimpleName());
     }
     @Override public void onActivityPaused(Activity activity) {
-        Timber.d("LIFECYCLE: %s onActivityPaused", activity.getClass().getName());
+        Timber.d("%s onActivityPaused", activity.getClass().getSimpleName());
     }
     @Override public void onActivityStopped(Activity activity) {
-        Timber.d("LIFECYCLE: %s onActivityStopped", activity.getClass().getName());
+        Timber.d("%s onActivityStopped", activity.getClass().getSimpleName());
     }
     @Override public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-        Timber.d("LIFECYCLE: %s onActivitySaveInstanceState", activity.getClass().getName());
+        Timber.d("%s onActivitySaveInstanceState", activity.getClass().getSimpleName());
     }
     @Override public void onActivityDestroyed(Activity activity) {
-        Timber.d("LIFECYCLE: %s onActivityDestroyed", activity.getClass().getName());
+        Timber.d("%s onActivityDestroyed", activity.getClass().getSimpleName());
     }
 }

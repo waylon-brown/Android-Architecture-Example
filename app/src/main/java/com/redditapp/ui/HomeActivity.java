@@ -1,4 +1,15 @@
-package com.redditapp.ui.screens.home;
+package com.redditapp.ui;
+
+import com.redditapp.R;
+import com.redditapp.RedditApplication;
+import com.redditapp.base.mvp.BaseActivity;
+import com.redditapp.base.mvp.BasePresenter;
+import com.redditapp.base.mvp.BaseView;
+import com.redditapp.business.presenters.HomePresenter;
+import com.redditapp.dagger.activity.ActivityModule;
+import com.redditapp.dagger.components.DaggerHomeComponent;
+import com.redditapp.dagger.components.HomeComponent;
+import com.redditapp.databinding.ActivityHomeBinding;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -11,45 +22,40 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.redditapp.R;
-import com.redditapp.RedditApplication;
-import com.redditapp.dagger.activity.ActivityModule;
-import com.redditapp.base.mvp.BaseActivity;
-import com.redditapp.base.mvp.BasePresenter;
-import com.redditapp.base.mvp.BaseView;
-import com.redditapp.databinding.ActivityHomeBinding;
+import android.view.View;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class HomeActivity extends BaseActivity<HomeComponent>
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Inject HomePresenter presenter;
-    HomeComponent component;
-
-    ActivityHomeBinding binding;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.nav_view) NavigationView navigationView;
 
+    ActivityHomeBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
+        //TODO: should this be here or in onPause/onResume?
+        presenter.takeView(this);
         setSupportActionBar(toolbar);
         setupViews();
     }
 
     @Override
     protected void onDestroy() {
-        component = null;
+        presenter.dropView(this);
         super.onDestroy();
     }
 
@@ -108,24 +114,26 @@ public class HomeActivity extends BaseActivity<HomeComponent>
         return true;
     }
 
+    @OnClick(R.id.fab)
+    public void fabClicked(View view) {
+        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
     /**
-     * HasComponent implementations
+     * FieldInjector implementation
      */
 
     @Override
-    public HomeComponent component() {
+    public HomeComponent buildComponentAndInject() {
         if (component == null) {
             component = DaggerHomeComponent.builder()
-                    .applicationComponent(RedditApplication.get(this).getComponent())
+                    .applicationComponent(RedditApplication.getComponent())
                     .activityModule(new ActivityModule(this))
                     .build();
         }
+        component.inject(this);
         return component;
-    }
-
-    @Override
-    public void inject() {
-        component().inject(this);
     }
 
     /**
@@ -140,20 +148,12 @@ public class HomeActivity extends BaseActivity<HomeComponent>
 
     @Override
     protected void setupViews() {
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    @Override
-    protected BasePresenter<? extends BaseView> getPresenter() {
-        return presenter;
     }
 
     @Override

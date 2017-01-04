@@ -1,18 +1,17 @@
 package com.redditapp;
 
-import android.app.Application;
-import android.content.Context;
-import android.util.Log;
-
 import com.redditapp.dagger.application.ApplicationComponent;
 import com.squareup.leakcanary.LeakCanary;
+
+import android.app.Application;
+import android.util.Log;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class RedditApplication extends Application {
-    private ApplicationComponent component;
+    private static ApplicationComponent component;
 
     @Inject
     ActivityLifecycleObserver activityLifecycleObserver;
@@ -24,6 +23,7 @@ public class RedditApplication extends Application {
         if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
         }
+        // Automatically compiles a no-op version if build type is release
         LeakCanary.install(this);
 
         if (BuildConfig.DEBUG) {
@@ -41,15 +41,12 @@ public class RedditApplication extends Application {
         component.inject(this);
     }
 
-    public ApplicationComponent getComponent() {
+    public static ApplicationComponent getComponent() {
         return component;
     }
 
-    public static RedditApplication get(Context context) {
-        return (RedditApplication)context.getApplicationContext();
-    }
-
-    /** A tree which logs important information for crash reporting. */
+    /** A tree which logs important information for crash reporting, and doesn't log Verbose or Debug */
+    //TODO: Also don't log i? Which levels should be logged in release?
     private static class CrashlyticsTree extends Timber.Tree {
         @Override
         protected void log(int priority, String tag, String message, Throwable t) {

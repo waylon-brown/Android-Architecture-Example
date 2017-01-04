@@ -1,9 +1,8 @@
 package com.redditapp.dagger.application;
 
-import android.app.Application;
-
 import com.redditapp.RedditApplication;
-import com.redditapp.ui.screens.home.HomeActivity;
+
+import android.app.Application;
 
 import javax.inject.Singleton;
 
@@ -17,7 +16,6 @@ import dagger.Component;
 public interface ApplicationComponent {
     // Places to inject
     void inject(RedditApplication app);
-    void inject(HomeActivity activity);
 
     // Exported for child-components.
     Application application();

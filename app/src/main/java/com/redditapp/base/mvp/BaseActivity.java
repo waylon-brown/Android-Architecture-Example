@@ -1,5 +1,7 @@
 package com.redditapp.base.mvp;
 
+import com.redditapp.dagger.FieldInjector;
+
 import android.databinding.ObservableField;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,19 +9,17 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 
-import com.redditapp.dagger.activity.BaseComponent;
-import com.redditapp.dagger.activity.HasComponent;
-
 import java.util.UUID;
 
-public abstract class BaseActivity<T extends BaseComponent> extends AppCompatActivity
-        implements HasComponent<T>, BaseView {
+public abstract class BaseActivity<T> extends AppCompatActivity
+        implements BaseView, FieldInjector<T> {
 
     private static final String BF_UNIQUE_KEY = BaseActivity.class.getName() + ".unique.key";
 
     protected ObservableField<String> toolbarTitle = new ObservableField<>();
 
     private String uniqueKey;
+    protected T component;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,11 +35,17 @@ public abstract class BaseActivity<T extends BaseComponent> extends AppCompatAct
         }
 
         super.onCreate(savedInstanceState);
-        inject();
+        component = buildComponentAndInject();
 
         // Data binding
         bindUi();
         toolbarTitle.set(getString(getToolbarTitle()));
+    }
+
+    @Override
+    protected void onDestroy() {
+        component = null;
+        super.onDestroy();
     }
 
     // No-op by default
@@ -67,6 +73,5 @@ public abstract class BaseActivity<T extends BaseComponent> extends AppCompatAct
      */
     protected abstract void bindUi();
     protected abstract void setupViews();
-    protected abstract BasePresenter<? extends BaseView> getPresenter();
     @StringRes protected abstract int getToolbarTitle();
 }

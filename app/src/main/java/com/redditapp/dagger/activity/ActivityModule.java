@@ -6,7 +6,9 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * A module to wrap the Activity state and expose it to the graph.
+ * Dependencies that the activities need, using the
+ * {@link PerActivity} scope to conform the lives of the dependencies to the
+ * life of the Activity.
  */
 @Module
 public class ActivityModule {

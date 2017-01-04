@@ -1,8 +1,8 @@
 package com.redditapp.dagger.activity;
 
-import android.app.Activity;
-
 import com.redditapp.dagger.application.ApplicationComponent;
+
+import android.app.Activity;
 
 import dagger.Component;
 
@@ -14,6 +14,6 @@ import dagger.Component;
  */
 @PerActivity // Subtypes of BaseActivityComponent should be decorated with @PerActivity.
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
-public interface BaseActivityComponent extends BaseComponent {
+public interface BaseActivityComponent {
     Activity activity(); // Expose the activity to sub-graphs.
 }

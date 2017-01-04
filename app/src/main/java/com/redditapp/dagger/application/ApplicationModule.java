@@ -1,12 +1,12 @@
 package com.redditapp.dagger.application;
 
+import com.redditapp.ActivityLifecycleObserver;
+import com.redditapp.RedditApplication;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
-import com.redditapp.RedditApplication;
-import com.redditapp.ActivityLifecycleObserver;
 
 import javax.inject.Singleton;
 
@@ -30,6 +30,7 @@ public final class ApplicationModule {
     }
 
     @Provides @Singleton
+    //TODO: do different contexts matter?
     Context provideContext() {
         return app;
     }
@@ -40,7 +41,7 @@ public final class ApplicationModule {
     }
 
     @Provides @Singleton
-    ActivityLifecycleObserver provideActivityHierarchyServer() {
+    ActivityLifecycleObserver provideActivityLifecycleObserver() {
         return new ActivityLifecycleObserver();
     }
 }

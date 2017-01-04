@@ -7,7 +7,7 @@ import android.os.Bundle;
 /** A "view server" adaptation which automatically hooks itself up to all activities.
  *
  * No-op version for release builds. This wasn't necessary because Timber is set up to not log
- * debug level for release anyways, it was mostly done to create the source sets and test
+ * debug level for release anyways, it was mostly done to create the source sets and test that
  * they work.
  * */
 public class ActivityLifecycleObserver implements Application.ActivityLifecycleCallbacks {
