@@ -1,17 +1,12 @@
- package com.redditapp.business.presenters;
+ package com.redditapp.screens.home;
 
  import com.redditapp.base.mvp.BasePresenter;
- import com.redditapp.ui.HomeActivity;
 
- import javax.inject.Inject;
+import javax.inject.Inject;
 
 public class HomePresenter extends BasePresenter<HomeActivity> {
 
-//    @Inject
-//    public HomePresenter(ActivityScreenSwitcher screenSwitcher) {
-//        this.screenSwitcher = screenSwitcher;
-//    }
-
+    // TODO: add dependencies through constructor injection
     @Inject
     public HomePresenter() {}
 

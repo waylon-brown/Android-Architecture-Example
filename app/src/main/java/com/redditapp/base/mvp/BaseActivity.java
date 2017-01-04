@@ -44,6 +44,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
+        // Ends the ActivityScope
         component = null;
         super.onDestroy();
     }

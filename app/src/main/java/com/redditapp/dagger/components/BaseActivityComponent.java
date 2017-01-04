@@ -1,6 +1,7 @@
-package com.redditapp.dagger.activity;
+package com.redditapp.dagger.components;
 
-import com.redditapp.dagger.application.ApplicationComponent;
+import com.redditapp.dagger.modules.ActivityModule;
+import com.redditapp.dagger.ActivityScope;
 
 import android.app.Activity;
 
@@ -12,7 +13,7 @@ import dagger.Component;
  *
  * Extensions of this should define injection points for the activity and its fragments.
  */
-@PerActivity // Subtypes of BaseActivityComponent should be decorated with @PerActivity.
+@ActivityScope // Subtypes of BaseActivityComponent should be decorated with @ActivityScope.
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface BaseActivityComponent {
     Activity activity(); // Expose the activity to sub-graphs.

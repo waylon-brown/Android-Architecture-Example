@@ -1,4 +1,4 @@
-package com.redditapp.dagger.application;
+package com.redditapp.dagger.modules;
 
 import com.redditapp.ActivityLifecycleObserver;
 import com.redditapp.RedditApplication;

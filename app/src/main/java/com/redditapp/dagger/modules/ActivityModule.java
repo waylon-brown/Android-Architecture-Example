@@ -1,4 +1,6 @@
-package com.redditapp.dagger.activity;
+package com.redditapp.dagger.modules;
+
+import com.redditapp.dagger.ActivityScope;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +12,7 @@ import dagger.Provides;
 
 /**
  * Dependencies that the activities need, using the
- * {@link PerActivity} scope to conform the lives of the dependencies to the
+ * {@link ActivityScope} scope to conform the lives of the dependencies to the
  * life of the Activity.
  */
 @Module
@@ -22,13 +24,13 @@ public class ActivityModule {
     }
 
     @Provides
-    @PerActivity
+    @ActivityScope
     Activity activity() {
         return activity;
     }
 
     @Provides
-    @PerActivity
+    @ActivityScope
     @Named("ActivityContext")
     Context provideContext() {
         return activity;

@@ -1,6 +1,6 @@
 package com.redditapp;
 
-import com.redditapp.dagger.application.ApplicationComponent;
+import com.redditapp.dagger.components.ApplicationComponent;
 import com.squareup.leakcanary.LeakCanary;
 
 import android.app.Application;

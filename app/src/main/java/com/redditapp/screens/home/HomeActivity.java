@@ -1,12 +1,9 @@
-package com.redditapp.ui;
+package com.redditapp.screens.home;
 
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
 import com.redditapp.base.mvp.BaseActivity;
-import com.redditapp.base.mvp.BasePresenter;
-import com.redditapp.base.mvp.BaseView;
-import com.redditapp.business.presenters.HomePresenter;
-import com.redditapp.dagger.activity.ActivityModule;
+import com.redditapp.dagger.modules.ActivityModule;
 import com.redditapp.dagger.components.DaggerHomeComponent;
 import com.redditapp.dagger.components.HomeComponent;
 import com.redditapp.databinding.ActivityHomeBinding;
@@ -48,9 +45,10 @@ public class HomeActivity extends BaseActivity<HomeComponent>
 
         ButterKnife.bind(this);
         //TODO: should this be here or in onPause/onResume?
-        presenter.takeView(this);
         setSupportActionBar(toolbar);
         setupViews();
+        presenter.takeView(this);
+        presenter.onLoad();
     }
 
     @Override

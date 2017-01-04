@@ -1,6 +1,8 @@
-package com.redditapp.dagger.application;
+package com.redditapp.dagger.components;
 
 import com.redditapp.RedditApplication;
+import com.redditapp.dagger.modules.ApplicationModule;
+import com.redditapp.dagger.application.DaggerApplicationComponent;
 
 import android.app.Application;
 
