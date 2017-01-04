@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -24,23 +25,27 @@ public final class ApplicationModule {
         this.app = app;
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     Application provideApplication() {
         return app;
     }
 
-    @Provides @Singleton
-    //TODO: do different contexts matter?
+    @Provides
+    @Singleton
+    @Named("ApplicationContext")
     Context provideContext() {
         return app;
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     SharedPreferences provideSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     ActivityLifecycleObserver provideActivityLifecycleObserver() {
         return new ActivityLifecycleObserver();
     }

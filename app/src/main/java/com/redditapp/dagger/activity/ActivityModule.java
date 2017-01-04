@@ -1,6 +1,9 @@
 package com.redditapp.dagger.activity;
 
 import android.app.Activity;
+import android.content.Context;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -18,12 +21,16 @@ public class ActivityModule {
         this.activity = activity;
     }
 
-    /**
-     * Expose the activity to dependents in the graph.
-     */
     @Provides
     @PerActivity
     Activity activity() {
+        return activity;
+    }
+
+    @Provides
+    @PerActivity
+    @Named("ActivityContext")
+    Context provideContext() {
         return activity;
     }
 }

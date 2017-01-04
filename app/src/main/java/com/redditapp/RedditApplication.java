@@ -45,8 +45,9 @@ public class RedditApplication extends Application {
         return component;
     }
 
-    /** A tree which logs important information for crash reporting, and doesn't log Verbose or Debug */
-    //TODO: Also don't log i? Which levels should be logged in release?
+    /**
+     * A tree which logs important information for crash reporting, and doesn't log Verbose or Debug
+     */
     private static class CrashlyticsTree extends Timber.Tree {
         @Override
         protected void log(int priority, String tag, String message, Throwable t) {
