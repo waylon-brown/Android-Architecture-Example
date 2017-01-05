@@ -3,9 +3,9 @@ package com.redditapp.screens.home;
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
 import com.redditapp.base.mvp.BaseActivity;
-import com.redditapp.dagger.modules.ActivityModule;
 import com.redditapp.dagger.components.DaggerHomeComponent;
 import com.redditapp.dagger.components.HomeComponent;
+import com.redditapp.dagger.modules.ActivityModule;
 import com.redditapp.databinding.ActivityHomeBinding;
 
 import android.databinding.DataBindingUtil;
@@ -21,16 +21,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class HomeActivity extends BaseActivity<HomeComponent>
+public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    @Inject HomePresenter presenter;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
@@ -44,17 +40,9 @@ public class HomeActivity extends BaseActivity<HomeComponent>
         super.onCreate(savedInstanceState);
 
         ButterKnife.bind(this);
-        //TODO: should this be here or in onPause/onResume?
         setSupportActionBar(toolbar);
         setupViews();
-        presenter.takeView(this);
         presenter.onLoad();
-    }
-
-    @Override
-    protected void onDestroy() {
-        presenter.dropView(this);
-        super.onDestroy();
     }
 
     @Override

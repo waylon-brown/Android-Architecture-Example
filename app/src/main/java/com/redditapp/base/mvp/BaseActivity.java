@@ -11,15 +11,28 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.UUID;
 
-public abstract class BaseActivity<T> extends AppCompatActivity
-        implements BaseView, FieldInjector<T> {
+import javax.inject.Inject;
+
+/**
+ * All activities extending this have a Dagger component, as well as a presenter
+ * to seperate business logic from views and keep code testable. They also perform
+ * field injection from {@link FieldInjector} since they are created by the
+ * framework and therefore can't do constructor injection.
+ *
+ * @param <C> Dagger component containing dependencies that exist during the
+ *           lifecycle of the activity
+ * @param <P> Presenter for the activity
+ */
+public abstract class BaseActivity<C, P extends BasePresenter> extends AppCompatActivity
+        implements BaseView, FieldInjector<C> {
 
     private static final String BF_UNIQUE_KEY = BaseActivity.class.getName() + ".unique.key";
 
     protected ObservableField<String> toolbarTitle = new ObservableField<>();
 
     private String uniqueKey;
-    protected T component;
+    protected C component;
+    @Inject protected P presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +49,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         component = buildComponentAndInject();
+        presenter.takeView(this);
 
         // Data binding
         bindUi();
@@ -46,6 +60,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity
     protected void onDestroy() {
         // Ends the ActivityScope
         component = null;
+        presenter.dropView(this);
         super.onDestroy();
     }
 

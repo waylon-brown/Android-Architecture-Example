@@ -1,16 +1,19 @@
 package com.redditapp;
 
 import com.redditapp.dagger.components.ApplicationComponent;
+import com.redditapp.dagger.components.DaggerApplicationComponent;
+import com.redditapp.dagger.modules.ApplicationModule;
+import com.redditapp.util.CrashlyticsTree;
 import com.squareup.leakcanary.LeakCanary;
 
 import android.app.Application;
-import android.util.Log;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class RedditApplication extends Application {
+
     private static ApplicationComponent component;
 
     @Inject
@@ -37,33 +40,13 @@ public class RedditApplication extends Application {
     }
 
     public void buildComponentAndInject() {
-        component = ApplicationComponent.Initializer.init(this);
+        component = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .build();
         component.inject(this);
     }
 
     public static ApplicationComponent getComponent() {
         return component;
-    }
-
-    /**
-     * A tree which logs important information for crash reporting, and doesn't log Verbose or Debug
-     */
-    private static class CrashlyticsTree extends Timber.Tree {
-        @Override
-        protected void log(int priority, String tag, String message, Throwable t) {
-            if (priority == Log.VERBOSE || priority == Log.DEBUG) {
-                return;
-            }
-
-            //TODO: implement Crashlytics
-//            FakeCrashLibrary.log(priority, tag, message);
-            if (t != null) {
-                if (priority == Log.ERROR) {
-//                    FakeCrashLibrary.logError(t);
-                } else if (priority == Log.WARN) {
-//                    FakeCrashLibrary.logWarning(t);
-                }
-            }
-        }
     }
 }

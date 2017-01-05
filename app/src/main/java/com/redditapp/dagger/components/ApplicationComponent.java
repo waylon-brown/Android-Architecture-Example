@@ -2,7 +2,6 @@ package com.redditapp.dagger.components;
 
 import com.redditapp.RedditApplication;
 import com.redditapp.dagger.modules.ApplicationModule;
-import com.redditapp.dagger.application.DaggerApplicationComponent;
 
 import android.app.Application;
 
@@ -21,16 +20,4 @@ public interface ApplicationComponent {
 
     // Exported for child-components.
     Application application();
-
-    /**
-     * An initializer that creates the graph from an application.
-     */
-    final class Initializer {
-        public static ApplicationComponent init(RedditApplication app) {
-            return DaggerApplicationComponent.builder()
-                    .applicationModule(new ApplicationModule(app))
-                    .build();
-        }
-        private Initializer() {} // No instances.
-    }
 }
