@@ -7,9 +7,11 @@ import com.redditapp.dagger.components.DaggerHomeComponent;
 import com.redditapp.dagger.components.HomeComponent;
 import com.redditapp.dagger.modules.ActivityModule;
 import com.redditapp.databinding.ActivityHomeBinding;
+import com.redditapp.models.AccessTokenResponse;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -24,6 +26,7 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -157,8 +160,8 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
     }
 
     @Override
-    public void showContent() {
-
+    public void showContent(@NonNull AccessTokenResponse response) {
+        Timber.d("Response: " + response.accessToken);
     }
 
     @Override

@@ -1,18 +1,65 @@
  package com.redditapp.screens.home;
 
+ import com.redditapp.api.RedditService;
  import com.redditapp.base.mvp.BasePresenter;
+ import com.redditapp.dagger.modules.NetworkModule;
+ import com.redditapp.models.AccessTokenRequest;
+ import com.redditapp.models.AccessTokenResponse;
 
-import javax.inject.Inject;
+ import java.util.UUID;
 
-public class HomePresenter extends BasePresenter<HomeActivity> {
+ import javax.inject.Inject;
+ import javax.inject.Named;
 
-    // TODO: add dependencies through constructor injection
+ import io.reactivex.Observer;
+ import io.reactivex.android.schedulers.AndroidSchedulers;
+ import io.reactivex.disposables.Disposable;
+ import io.reactivex.schedulers.Schedulers;
+ import retrofit2.Retrofit;
+ import timber.log.Timber;
+
+ public class HomePresenter extends BasePresenter<HomeActivity> {
+
+    private Retrofit retrofit;
+
     @Inject
-    public HomePresenter() {}
+    public HomePresenter(@Named(NetworkModule.AUTHENTICATED_HTTP_CLIENT) Retrofit retrofit) {
+        this.retrofit = retrofit;
+    }
 
     @Override
     protected void onLoad() {
-        super.onLoad();
+        retrofit.create(RedditService.class)
+                .getNoUserAccessToken(AccessTokenRequest.create(UUID.randomUUID().toString()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(new Observer<AccessTokenResponse>() {
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                        //TODO: handle
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(AccessTokenResponse response) {
+                        getView().showContent(response);
+                    }
+                });
+
+
+
 //        getView().showLoading();
 //        request = galleryDatabase.loadGallery(section, new EndlessObserver<List<Image>>() {
 //            @Override

@@ -22,10 +22,6 @@ public class BasePresenter<V extends BaseView> {
         }
 
         this.view = new WeakReference<V>(view);
-        if (!loaded) {
-            loaded = true;
-            onLoad();
-        }
     }
 
     public final void dropView(V view) {
@@ -35,6 +31,10 @@ public class BasePresenter<V extends BaseView> {
         loaded = false;
         this.view = null;
         onDestroy();
+    }
+
+    protected V getView() {
+        return view.get();
     }
 
     protected void onLoad() {
