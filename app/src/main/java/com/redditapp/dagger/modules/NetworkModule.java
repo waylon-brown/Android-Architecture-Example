@@ -13,7 +13,6 @@ import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
@@ -25,7 +24,7 @@ public class NetworkModule {
 
     // Named providers
     public static final String NO_AUTH_HTTP_CLIENT = "No Authentication";   //Used for both Http client and Retrofit
-    public static final String ACCESS_TOKEN_NO_USER = "Basic Authentication - No User";    //Used for both Http client and Retrofit
+    public static final String BASIC_AUTH_HTTP_CLIENT = "Basic Authentication - No User";    //Used for both Http client and Retrofit
 
     @Provides
     @Singleton
@@ -62,7 +61,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    @Named(ACCESS_TOKEN_NO_USER)
+    @Named(BASIC_AUTH_HTTP_CLIENT)
     OkHttpClient provideAuthenticatedOkhttpClient(OkHttpClient.Builder okHttpBuilder) {
         return okHttpBuilder
                 .authenticator((route, response) -> {
@@ -95,8 +94,8 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    @Named(ACCESS_TOKEN_NO_USER)
-    Retrofit provideAuthenticatedRetrofit(Retrofit.Builder builder, @Named(ACCESS_TOKEN_NO_USER) OkHttpClient okHttpClient) {
+    @Named(BASIC_AUTH_HTTP_CLIENT)
+    Retrofit provideAuthenticatedRetrofit(Retrofit.Builder builder, @Named(BASIC_AUTH_HTTP_CLIENT) OkHttpClient okHttpClient) {
         return builder
                 .client(okHttpClient)
                 .build();

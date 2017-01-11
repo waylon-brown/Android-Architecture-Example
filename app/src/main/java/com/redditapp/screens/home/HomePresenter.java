@@ -22,7 +22,7 @@ import timber.log.Timber;
     private Retrofit retrofit;
 
     @Inject
-    public HomePresenter(@Named(NetworkModule.ACCESS_TOKEN_NO_USER) Retrofit retrofit) {
+    public HomePresenter(@Named(NetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit retrofit) {
         this.retrofit = retrofit;
     }
 
