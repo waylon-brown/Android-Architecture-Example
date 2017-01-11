@@ -2,6 +2,7 @@ package com.redditapp.models;
 
 import com.squareup.moshi.Json;
 
+//TODO: use as example for HTML body
 public class AccessTokenRequest {
 
     private static final String GRANT_TYPE = "https://oauth.reddit.com/grants/installed_client";

@@ -24,5 +24,5 @@ public interface ApplicationComponent {
     // Exported for child-components.
     Application application();
     @Named(NetworkModule.NO_AUTH_HTTP_CLIENT) Retrofit nonAuthRetrofit();
-    @Named(NetworkModule.AUTHENTICATED_HTTP_CLIENT) Retrofit authenticatedRetrofit();
+    @Named(NetworkModule.ACCESS_TOKEN_NO_USER) Retrofit authenticatedRetrofit();
 }
