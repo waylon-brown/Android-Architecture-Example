@@ -1,21 +1,22 @@
  package com.redditapp.screens.home;
 
  import com.redditapp.api.RedditService;
-import com.redditapp.base.mvp.BasePresenter;
-import com.redditapp.dagger.modules.NetworkModule;
-import com.redditapp.models.AccessTokenResponse;
+ import com.redditapp.base.mvp.BasePresenter;
+ import com.redditapp.dagger.modules.NetworkModule;
+ import com.redditapp.models.AccessTokenResponse;
 
-import java.util.UUID;
+ import java.util.UUID;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+ import javax.inject.Inject;
+ import javax.inject.Named;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
-import timber.log.Timber;
+ import io.reactivex.Observable;
+ import io.reactivex.Observer;
+ import io.reactivex.android.schedulers.AndroidSchedulers;
+ import io.reactivex.disposables.Disposable;
+ import io.reactivex.schedulers.Schedulers;
+ import retrofit2.Retrofit;
+ import timber.log.Timber;
 
  public class HomePresenter extends BasePresenter<HomeActivity> {
 
@@ -28,8 +29,8 @@ import timber.log.Timber;
 
     @Override
     protected void onLoad() {
-        retrofit.create(RedditService.class)
-                .getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString())
+        // First get access token, then get main feed
+        Observable.concat(getUserAccessTokenObservable(), getRedditFrontPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -92,5 +93,17 @@ import timber.log.Timber;
         super.onDestroy();
 //        request.unsubscribe();
 //        clicks.unsubscribe();
+    }
+
+    private Observable<AccessTokenResponse> getUserAccessTokenObservable() {
+        Timber.d("First");
+        return retrofit.create(RedditService.class)
+                .getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString());
+    }
+
+    private Observable<AccessTokenResponse> getRedditFrontPage() {
+        Timber.d("Second");
+        return retrofit.create(RedditService.class)
+                .getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString());
     }
 }
