@@ -1,22 +1,21 @@
  package com.redditapp.screens.home;
 
  import com.redditapp.api.RedditService;
- import com.redditapp.base.mvp.BasePresenter;
- import com.redditapp.dagger.modules.NetworkModule;
- import com.redditapp.models.AccessTokenResponse;
+import com.redditapp.base.mvp.BasePresenter;
+import com.redditapp.dagger.modules.NetworkModule;
+import com.redditapp.models.AccessTokenResponse;
+import com.redditapp.util.RxUtils;
 
- import java.util.UUID;
+import java.util.UUID;
 
- import javax.inject.Inject;
- import javax.inject.Named;
+import javax.inject.Inject;
+import javax.inject.Named;
 
- import io.reactivex.Observable;
- import io.reactivex.Observer;
- import io.reactivex.android.schedulers.AndroidSchedulers;
- import io.reactivex.disposables.Disposable;
- import io.reactivex.schedulers.Schedulers;
- import retrofit2.Retrofit;
- import timber.log.Timber;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import retrofit2.Retrofit;
+import timber.log.Timber;
 
  public class HomePresenter extends BasePresenter<HomeActivity> {
 
@@ -29,12 +28,11 @@
 
     @Override
     protected void onLoad() {
+
         // First get access token, then get main feed
-        Observable.concat(getUserAccessTokenObservable(), getRedditFrontPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new Observer<AccessTokenResponse>() {
+        RxUtils.asyncToUiObservable(getUserAccessTokenObservable())
+                .flatMap(response -> getRedditFrontPageObservable(response.accessToken))
+                .subscribe(new Observer<String>() {
 
                     @Override
                     public void onError(Throwable e) {
@@ -53,7 +51,7 @@
                     }
 
                     @Override
-                    public void onNext(AccessTokenResponse response) {
+                    public void onNext(String response) {
                         getView().showContent(response);
                     }
                 });
@@ -95,15 +93,17 @@
 //        clicks.unsubscribe();
     }
 
+     /**
+      * Return cached token or retrieve a new one if needed
+      */
     private Observable<AccessTokenResponse> getUserAccessTokenObservable() {
         Timber.d("First");
         return retrofit.create(RedditService.class)
                 .getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString());
     }
 
-    private Observable<AccessTokenResponse> getRedditFrontPage() {
+    private Observable<String> getRedditFrontPageObservable(String accessToken) {
         Timber.d("Second");
-        return retrofit.create(RedditService.class)
-                .getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString());
+        return Observable.just("Reddit front page JSON from access token: " + accessToken);
     }
 }

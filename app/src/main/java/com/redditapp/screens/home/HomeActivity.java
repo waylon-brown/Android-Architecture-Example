@@ -7,7 +7,6 @@ import com.redditapp.dagger.components.DaggerHomeComponent;
 import com.redditapp.dagger.components.HomeComponent;
 import com.redditapp.dagger.modules.ActivityModule;
 import com.redditapp.databinding.ActivityHomeBinding;
-import com.redditapp.models.AccessTokenResponse;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -160,8 +159,8 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
     }
 
     @Override
-    public void showContent(@NonNull AccessTokenResponse response) {
-        Timber.d("Response: " + response.accessToken);
+    public void showContent(@NonNull String response) {
+        Timber.d("Response: " + response);
     }
 
     @Override
