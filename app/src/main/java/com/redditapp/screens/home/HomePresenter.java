@@ -2,59 +2,55 @@
 
  import com.redditapp.api.RedditService;
 import com.redditapp.base.mvp.BasePresenter;
-import com.redditapp.dagger.modules.NetworkModule;
+import com.redditapp.dagger.modules.BasicAuthNetworkModule;
+import com.redditapp.dagger.modules.OauthNetworkModule;
 import com.redditapp.models.AccessTokenResponse;
-import com.redditapp.util.RxUtils;
+ import com.redditapp.util.StringUtils;
 
-import java.util.UUID;
+ import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import timber.log.Timber;
 
  public class HomePresenter extends BasePresenter<HomeActivity> {
 
-    private Retrofit retrofit;
+     private Retrofit basicAuthRetrofit;
+     private Retrofit oauthRetrofit;
 
     @Inject
-    public HomePresenter(@Named(NetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit retrofit) {
-        this.retrofit = retrofit;
+    public HomePresenter(@Named(BasicAuthNetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit basicAuthRetrofit,
+                         @Named(OauthNetworkModule.OAUTH_HTTP_CLIENT) Retrofit oauthRetrofit) {
+        this.basicAuthRetrofit = basicAuthRetrofit;
+        this.oauthRetrofit = oauthRetrofit;
     }
 
     @Override
     protected void onLoad() {
 
         // First get access token, then get main feed
-        RxUtils.asyncToUiObservable(getUserAccessTokenObservable())
+        DisposableSingleObserver observer = getUserAccessTokenObservable()
                 .flatMap(response -> getRedditFrontPageObservable(response.accessToken))
-                .subscribe(new Observer<String>() {
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<String>() {
+                   @Override
+                   public void onSuccess(String value) {
+						getView().showContent(value);
+                   }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e);
-                        //TODO: handle
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(String response) {
-                        getView().showContent(response);
-                    }
+                   @Override
+                   public void onError(Throwable e) {
+						Timber.e(e);
+                   }
                 });
+        disposables.add(observer);
 
 
 
@@ -86,24 +82,19 @@ import timber.log.Timber;
 //        );
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        request.unsubscribe();
-//        clicks.unsubscribe();
-    }
-
      /**
       * Return cached token or retrieve a new one if needed
+	  *
+	  * TODO: cache
       */
-    private Observable<AccessTokenResponse> getUserAccessTokenObservable() {
-        return retrofit.create(RedditService.class)
+    private Single<AccessTokenResponse> getUserAccessTokenObservable() {
+        return basicAuthRetrofit.create(RedditService.class)
                 .getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString());
     }
 
-    private Observable<String> getRedditFrontPageObservable(String accessToken) {
-        return retrofit.create(RedditService.class)
-                .getFrontPageListing(accessToken);
-//        return Observable.just("Reddit front page JSON from access token: " + accessToken);
+    private Single<String> getRedditFrontPageObservable(String accessToken) {
+		return oauthRetrofit.create(RedditService.class)
+                .getFrontPageListing(StringUtils.getBearerToken(accessToken));
+//        return Single.just("Reddit front page JSON from access token: " + accessToken);
     }
 }

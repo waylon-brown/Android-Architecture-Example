@@ -5,8 +5,12 @@ import android.support.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
 
+import io.reactivex.disposables.CompositeDisposable;
+
 public class BasePresenter<V extends BaseView> {
+
     private WeakReference<V> view = null;
+    protected final CompositeDisposable disposables = new CompositeDisposable();
 
     // Load has been called for the current view
     private boolean loaded;
@@ -41,6 +45,7 @@ public class BasePresenter<V extends BaseView> {
     }
 
     protected void onDestroy() {
+        disposables.dispose();
     }
 
     protected void onRestore(@NonNull Bundle savedInstanceState) {

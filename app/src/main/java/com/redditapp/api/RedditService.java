@@ -2,10 +2,11 @@ package com.redditapp.api;
 
 import com.redditapp.models.AccessTokenResponse;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
@@ -16,10 +17,10 @@ public interface RedditService {
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("access_token")
-    Observable<AccessTokenResponse> getNoUserAccessToken(@Field("grant_type") String grantType, @Field("device_id") String deviceId);
+    Single<AccessTokenResponse> getNoUserAccessToken(@Field("grant_type") String grantType, @Field("device_id") String deviceId);
 
     @GET("hot")
-    Observable<RedditListing> getFrontPageListing(String accessToken);
+    Single<String> getFrontPageListing(@Header("Authorization") String token);
 
     // use body example
 //    Observable<AccessTokenResponse> getNoUserAccessToken(@Body AccessTokenRequest user);
