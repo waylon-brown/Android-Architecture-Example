@@ -97,13 +97,13 @@ import timber.log.Timber;
       * Return cached token or retrieve a new one if needed
       */
     private Observable<AccessTokenResponse> getUserAccessTokenObservable() {
-        Timber.d("First");
         return retrofit.create(RedditService.class)
                 .getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString());
     }
 
     private Observable<String> getRedditFrontPageObservable(String accessToken) {
-        Timber.d("Second");
-        return Observable.just("Reddit front page JSON from access token: " + accessToken);
+        return retrofit.create(RedditService.class)
+                .getFrontPageListing(accessToken);
+//        return Observable.just("Reddit front page JSON from access token: " + accessToken);
     }
 }

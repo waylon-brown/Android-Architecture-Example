@@ -104,6 +104,7 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
 
     @OnClick(R.id.fab)
     public void fabClicked(View view) {
+        presenter.onLoad();
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
