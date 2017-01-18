@@ -13,11 +13,14 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 
-import static com.redditapp.dagger.modules.MainNetworkModule.BASIC_AUTH_BASE_URL;
-
+/**
+ * Used only to get the authorization ID which is used in every call in {@link OauthNetworkModule}.
+ * Has a different base URL and authorization token.
+ */
 @Module
 public class BasicAuthNetworkModule {
 
+    public static final String BASIC_AUTH_BASE_URL = "https://www.reddit.com/api/v1/";
     public static final String BASIC_AUTH_HTTP_CLIENT = "Basic Authentication";    //Used for both Http client and Retrofit
 
     @Provides

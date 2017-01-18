@@ -11,11 +11,14 @@ import dagger.Provides;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 
+/**
+ * Main dependencies for {@link OkHttpClient} and {@link retrofit2.Retrofit}.
+ * 
+ * Used in {@link BasicAuthNetworkModule} and {@link OauthNetworkModule}.
+ */
 @Module
 public class MainNetworkModule {
 
-    public static final String BASIC_AUTH_BASE_URL = "https://www.reddit.com/api/v1/";
-    public static final String OAUTH_BASE_URL = "https://oauth.reddit.com/";
     public static final String REDDIT_CLIENT_ID = "5FOHjrI8cAlWfw";
 
     @Provides
