@@ -12,6 +12,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import io.realm.Realm;
 import retrofit2.Retrofit;
 
 /**
@@ -32,4 +33,5 @@ public interface ApplicationComponent {
     Application application();
     @Named(BasicAuthNetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit basicAuthRetrofit();
     @Named(OauthNetworkModule.OAUTH_HTTP_CLIENT) Retrofit oauthRetrofit();
+    Realm realm();
 }

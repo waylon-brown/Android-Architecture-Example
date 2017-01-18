@@ -1,35 +1,40 @@
  package com.redditapp.screens.home;
 
  import com.redditapp.api.RedditService;
-import com.redditapp.base.mvp.BasePresenter;
-import com.redditapp.dagger.modules.BasicAuthNetworkModule;
-import com.redditapp.dagger.modules.OauthNetworkModule;
-import com.redditapp.models.AccessTokenResponse;
+ import com.redditapp.base.mvp.BasePresenter;
+ import com.redditapp.dagger.modules.BasicAuthNetworkModule;
+ import com.redditapp.dagger.modules.OauthNetworkModule;
+ import com.redditapp.models.AccessTokenResponse;
+ import com.redditapp.models.listing.Listing;
  import com.redditapp.util.StringUtils;
 
  import java.util.UUID;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+ import javax.inject.Inject;
+ import javax.inject.Named;
 
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
-import timber.log.Timber;
+ import io.reactivex.Single;
+ import io.reactivex.android.schedulers.AndroidSchedulers;
+ import io.reactivex.observers.DisposableSingleObserver;
+ import io.reactivex.schedulers.Schedulers;
+ import io.realm.Realm;
+ import retrofit2.Retrofit;
+ import timber.log.Timber;
 
  public class HomePresenter extends BasePresenter<HomeActivity> {
 
      private Retrofit basicAuthRetrofit;
      private Retrofit oauthRetrofit;
+	  private Realm realm;
 
-    @Inject
+	 @Inject
     public HomePresenter(@Named(BasicAuthNetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit basicAuthRetrofit,
-                         @Named(OauthNetworkModule.OAUTH_HTTP_CLIENT) Retrofit oauthRetrofit) {
+                         @Named(OauthNetworkModule.OAUTH_HTTP_CLIENT) Retrofit oauthRetrofit,
+						 Realm realm) {
         this.basicAuthRetrofit = basicAuthRetrofit;
         this.oauthRetrofit = oauthRetrofit;
-    }
+		  this.realm = realm;
+	 }
 
     @Override
     protected void onLoad() {
@@ -39,10 +44,12 @@ import timber.log.Timber;
                 .flatMap(response -> getRedditFrontPageObservable(response.accessToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<String>() {
+                .subscribeWith(new DisposableSingleObserver<Listing>() {
                    @Override
-                   public void onSuccess(String value) {
-						getView().showContent(value);
+                   public void onSuccess(Listing value) {
+//							  getView().showContent(value);
+							  Listing listing = value;
+							  Timber.d(listing.toString());
                    }
 
                    @Override
@@ -92,7 +99,7 @@ import timber.log.Timber;
                 .getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString());
     }
 
-    private Single<String> getRedditFrontPageObservable(String accessToken) {
+    private Single<Listing> getRedditFrontPageObservable(String accessToken) {
 		return oauthRetrofit.create(RedditService.class)
                 .getFrontPageListing(StringUtils.getBearerToken(accessToken));
 //        return Single.just("Reddit front page JSON from access token: " + accessToken);

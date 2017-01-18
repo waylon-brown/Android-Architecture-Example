@@ -51,7 +51,7 @@ public abstract class BaseActivity<C, P extends BasePresenter> extends AppCompat
         component = buildComponentAndInject();
         presenter.takeView(this);
 
-        // Data binding
+        // ListingData binding
         bindUi();
         toolbarTitle.set(getString(getToolbarTitle()));
     }

@@ -1,18 +1,19 @@
 package com.redditapp.dagger.modules;
 
-import com.redditapp.ActivityLifecycleObserver;
-import com.redditapp.RedditApplication;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.redditapp.ActivityLifecycleObserver;
+import com.redditapp.RedditApplication;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.realm.Realm;
 
 /**
  * Application-wide dependencies.
@@ -48,5 +49,12 @@ public final class ApplicationModule {
     @Singleton
     ActivityLifecycleObserver provideActivityLifecycleObserver() {
         return new ActivityLifecycleObserver();
+    }
+
+    @Provides
+    @Singleton
+    Realm provideRealm(@Named("ApplicationContext") Context context) {
+        Realm.init(context);
+        return Realm.getDefaultInstance();
     }
 }

@@ -1,6 +1,7 @@
 package com.redditapp.api;
 
 import com.redditapp.models.AccessTokenResponse;
+import com.redditapp.models.listing.Listing;
 
 import io.reactivex.Single;
 import retrofit2.http.Field;
@@ -20,7 +21,7 @@ public interface RedditService {
     Single<AccessTokenResponse> getNoUserAccessToken(@Field("grant_type") String grantType, @Field("device_id") String deviceId);
 
     @GET("hot")
-    Single<String> getFrontPageListing(@Header("Authorization") String token);
+    Single<Listing> getFrontPageListing(@Header("Authorization") String token);
 
     // use body example
 //    Observable<AccessTokenResponse> getNoUserAccessToken(@Body AccessTokenRequest user);
