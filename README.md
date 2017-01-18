@@ -3,6 +3,7 @@ This app hits the Reddit API to demonstrate how one can incorporate MVP principl
 ## Dagger 2
 ## RxJava 2
 ## Retrofit 2
+## Realm
 ## Moshi
 ## AutoValue
 ## Data binding
