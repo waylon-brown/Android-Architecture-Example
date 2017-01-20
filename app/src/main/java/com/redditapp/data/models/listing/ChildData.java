@@ -69,7 +69,11 @@ public class ChildData implements RealmModel {
 	public String thumbnail;
 	@Json(name = "subreddit_id")
 	public String subredditID;
-	public boolean edited;
+
+	//TODO: can be either a boolean (false) or double (time)
+	@Ignore
+	public transient double edited;
+
 	@Json(name = "link_flair_css_class")
 	public String linkFlairCssClass;
 	@Json(name = "author_flair_css_class")
@@ -118,7 +122,7 @@ public class ChildData implements RealmModel {
 
 	public ChildData() {}
 
-	public ChildData(boolean contestMode, String bannedBy, String domain, String subbreddit, String selfTextHtml, String selfText, String likes, String suggestedSort, List<Object> userReports, String secureMedia, boolean saved, String id, int gilded, Object secureMediaEmbed, boolean clicked, String reportReasons, String author, String media, String name, int score, String approvedBy, boolean over18, String removalReason, boolean hidden, Object preview, String thumbnail, String subredditID, boolean edited, String linkFlairCssClass, String authorFlairCssClass, int downs, List<Object> modReports, boolean archived, Object mediaEmbed, String postHint, boolean isSelf, boolean hideScore, boolean spoiler, String permalink, boolean locked, boolean stickied, double created, String url, String authorFlairText, boolean quarantine, String title, double createdUTC, String linkFlairText, String distinguished, int numComments, boolean visited, String numReports, int ups) {
+	public ChildData(boolean contestMode, String bannedBy, String domain, String subbreddit, String selfTextHtml, String selfText, String likes, String suggestedSort, List<Object> userReports, String secureMedia, boolean saved, String id, int gilded, Object secureMediaEmbed, boolean clicked, String reportReasons, String author, String media, String name, int score, String approvedBy, boolean over18, String removalReason, boolean hidden, Object preview, String thumbnail, String subredditID, double edited, String linkFlairCssClass, String authorFlairCssClass, int downs, List<Object> modReports, boolean archived, Object mediaEmbed, String postHint, boolean isSelf, boolean hideScore, boolean spoiler, String permalink, boolean locked, boolean stickied, double created, String url, String authorFlairText, boolean quarantine, String title, double createdUTC, String linkFlairText, String distinguished, int numComments, boolean visited, String numReports, int ups) {
 		this.contestMode = contestMode;
 		this.bannedBy = bannedBy;
 		this.domain = domain;

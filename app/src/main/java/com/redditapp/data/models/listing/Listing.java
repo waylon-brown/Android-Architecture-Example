@@ -1,6 +1,7 @@
 package com.redditapp.data.models.listing;
 
 import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 /**
@@ -8,6 +9,9 @@ import io.realm.annotations.RealmClass;
  */
 @RealmClass
 public class Listing implements RealmModel {
+
+	@PrimaryKey
+	public int id;
 
 	public String kind;
 	public ListingData data;

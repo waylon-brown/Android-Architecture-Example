@@ -4,6 +4,7 @@ import com.redditapp.api.RedditService;
 import com.redditapp.base.mvp.BasePresenter;
 import com.redditapp.dagger.modules.BasicAuthNetworkModule;
 import com.redditapp.dagger.modules.OauthNetworkModule;
+import com.redditapp.data.RealmManager;
 import com.redditapp.data.models.AccessTokenResponse;
 import com.redditapp.data.models.listing.Listing;
 import com.redditapp.util.StringUtils;
@@ -17,7 +18,6 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import io.realm.Realm;
 import retrofit2.Retrofit;
 import timber.log.Timber;
 
@@ -25,15 +25,15 @@ public class HomePresenter extends BasePresenter<HomeActivity> {
 
 	private Retrofit basicAuthRetrofit;
 	private Retrofit oauthRetrofit;
-	private Realm realm;
+	private RealmManager realmManager;
 
 	@Inject
 	public HomePresenter(@Named(BasicAuthNetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit basicAuthRetrofit,
 						 @Named(OauthNetworkModule.OAUTH_HTTP_CLIENT) Retrofit oauthRetrofit,
-						 Realm realm) {
+						 RealmManager realmManager) {
 		this.basicAuthRetrofit = basicAuthRetrofit;
 		this.oauthRetrofit = oauthRetrofit;
-		this.realm = realm;
+		this.realmManager = realmManager;
 	}
 
 	@Override
@@ -48,8 +48,7 @@ public class HomePresenter extends BasePresenter<HomeActivity> {
 					@Override
 					public void onSuccess(Listing value) {
 //							  getView().showContent(value);
-						Listing listing = value;
-						Timber.d(listing.toString());
+						realmManager.updateListingAsync(value);
 					}
 
 					@Override

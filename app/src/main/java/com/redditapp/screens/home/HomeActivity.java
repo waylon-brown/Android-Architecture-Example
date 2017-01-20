@@ -1,13 +1,5 @@
 package com.redditapp.screens.home;
 
-import com.redditapp.R;
-import com.redditapp.RedditApplication;
-import com.redditapp.base.mvp.BaseActivity;
-import com.redditapp.dagger.components.DaggerHomeComponent;
-import com.redditapp.dagger.components.HomeComponent;
-import com.redditapp.dagger.modules.ActivityModule;
-import com.redditapp.databinding.ActivityHomeBinding;
-
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,18 +14,34 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.redditapp.R;
+import com.redditapp.RedditApplication;
+import com.redditapp.base.mvp.BaseActivity;
+import com.redditapp.dagger.components.DaggerHomeComponent;
+import com.redditapp.dagger.components.HomeComponent;
+import com.redditapp.dagger.modules.ActivityModule;
+import com.redditapp.data.RealmManager;
+import com.redditapp.data.models.listing.Listing;
+import com.redditapp.databinding.ActivityHomeBinding;
+
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.RealmChangeListener;
 import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, RealmChangeListener<Listing> {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.nav_view) NavigationView navigationView;
+
+    @Inject
+    RealmManager realmManager;
 
     ActivityHomeBinding binding;
 
@@ -44,8 +52,84 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         setupViews();
+        realmManager.setListingChangeListener(this);
         presenter.onLoad();
     }
+
+    @OnClick(R.id.fab)
+    public void fabClicked(View view) {
+        presenter.onLoad();
+        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
+    /**
+     * From {@link RealmChangeListener}.
+     */
+    @Override
+    public void onChange(Listing element) {
+        Timber.d("Element: " + element.data.children.get(0).data.author);
+    }
+
+    /**
+     * BaseActivity implementations
+     */
+
+    @Override
+    protected void bindUi() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
+        binding.appBarHome.setToolbarTitle(toolbarTitle);
+    }
+
+    @Override
+    protected void setupViews() {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected int getToolbarTitle() {
+        return R.string.home_activity_title;
+    }
+
+    /**
+     * BaseView implementations
+     */
+
+    @Override
+    public void showLoading() { }
+
+    @Override
+    public void showContent(@NonNull String response) { }
+
+    @Override
+    public void showEmpty() { }
+
+    @Override
+    public void showError(Throwable throwable) { }
+
+    /**
+     * From {@link com.redditapp.dagger.FieldInjector}.
+     */
+    @Override
+    public HomeComponent buildComponentAndInject() {
+        if (component == null) {
+            component = DaggerHomeComponent.builder()
+                    .applicationComponent(RedditApplication.getComponent())
+                    .activityModule(new ActivityModule(this))
+                    .build();
+        }
+        component.inject(this);
+        return component;
+    }
+
+    /**
+     * Android framework stuff
+     */
 
     @Override
     public void onBackPressed() {
@@ -100,77 +184,5 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @OnClick(R.id.fab)
-    public void fabClicked(View view) {
-        presenter.onLoad();
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-    }
-
-    /**
-     * FieldInjector implementation
-     */
-
-    @Override
-    public HomeComponent buildComponentAndInject() {
-        if (component == null) {
-            component = DaggerHomeComponent.builder()
-                    .applicationComponent(RedditApplication.getComponent())
-                    .activityModule(new ActivityModule(this))
-                    .build();
-        }
-        component.inject(this);
-        return component;
-    }
-
-    /**
-     * BaseActivity implementations
-     */
-
-    @Override
-    protected void bindUi() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
-        binding.appBarHome.setToolbarTitle(toolbarTitle);
-    }
-
-    @Override
-    protected void setupViews() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    @Override
-    protected int getToolbarTitle() {
-        return R.string.home_activity_title;
-    }
-
-    /**
-     * BaseView implementations
-     */
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void showContent(@NonNull String response) {
-        Timber.d("Response: " + response);
-    }
-
-    @Override
-    public void showEmpty() {
-
-    }
-
-    @Override
-    public void showError(Throwable throwable) {
-
     }
 }
