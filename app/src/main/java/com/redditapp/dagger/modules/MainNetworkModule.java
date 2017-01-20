@@ -2,6 +2,7 @@ package com.redditapp.dagger.modules;
 
 import android.app.Application;
 
+import com.redditapp.util.jsonadapters.ChildrenListJsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import javax.inject.Singleton;
@@ -33,7 +34,9 @@ public class MainNetworkModule {
     @Provides
     @Singleton
     Moshi provideMoshi() {
-        return new Moshi.Builder().build();
+        return new Moshi.Builder()
+                .add(new ChildrenListJsonAdapter())
+                .build();
     }
 
     @Provides

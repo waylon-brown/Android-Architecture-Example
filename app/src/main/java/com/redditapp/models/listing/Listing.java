@@ -1,12 +1,18 @@
 package com.redditapp.models.listing;
 
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
+
 /**
  * Use https://www.reddit.com/hot.json as an example listing response.
  */
-public class Listing {
+@RealmClass
+public class Listing implements RealmModel {
 
-	public final String kind;
-	public final ListingData data;
+	public String kind;
+	public ListingData data;
+
+	public Listing() {}
 
 	public Listing(String kind, ListingData data) {
 		this.kind = kind;

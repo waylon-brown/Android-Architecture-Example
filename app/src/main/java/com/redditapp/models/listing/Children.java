@@ -1,9 +1,16 @@
 package com.redditapp.models.listing;
 
-public class Children {
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
-	public final String kind;
-	public final ChildData data;
+@RealmClass
+public class Children implements RealmModel {
+
+	public String kind;
+	public ChildData data;
+
+	public Children() {
+	}
 
 	public Children(String kind, ChildData data) {
 		this.kind = kind;

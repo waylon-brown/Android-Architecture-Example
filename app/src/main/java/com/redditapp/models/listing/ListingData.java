@@ -1,15 +1,21 @@
 package com.redditapp.models.listing;
 
-import java.util.List;
+import io.realm.RealmList;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
-public class ListingData {
+@RealmClass
+public class ListingData implements RealmModel {
 
-	public final String modhash;
-	public final List<Children> children;
-	public final String after;
-	public final String before;
+	public String modhash;
+	public RealmList<Children> children;
+	public String after;
+	public String before;
 
-	public ListingData(String modhash, List<Children> children, String after, String before) {
+	public ListingData() {
+	}
+
+	public ListingData(String modhash, RealmList<Children> children, String after, String before) {
 		this.modhash = modhash;
 		this.children = children;
 		this.after = after;

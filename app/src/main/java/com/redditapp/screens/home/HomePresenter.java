@@ -1,64 +1,63 @@
- package com.redditapp.screens.home;
+package com.redditapp.screens.home;
 
- import com.redditapp.api.RedditService;
- import com.redditapp.base.mvp.BasePresenter;
- import com.redditapp.dagger.modules.BasicAuthNetworkModule;
- import com.redditapp.dagger.modules.OauthNetworkModule;
- import com.redditapp.models.AccessTokenResponse;
- import com.redditapp.models.listing.Listing;
- import com.redditapp.util.StringUtils;
+import com.redditapp.api.RedditService;
+import com.redditapp.base.mvp.BasePresenter;
+import com.redditapp.dagger.modules.BasicAuthNetworkModule;
+import com.redditapp.dagger.modules.OauthNetworkModule;
+import com.redditapp.models.AccessTokenResponse;
+import com.redditapp.models.listing.Listing;
+import com.redditapp.util.StringUtils;
 
- import java.util.UUID;
+import java.util.UUID;
 
- import javax.inject.Inject;
- import javax.inject.Named;
+import javax.inject.Inject;
+import javax.inject.Named;
 
- import io.reactivex.Single;
- import io.reactivex.android.schedulers.AndroidSchedulers;
- import io.reactivex.observers.DisposableSingleObserver;
- import io.reactivex.schedulers.Schedulers;
- import io.realm.Realm;
- import retrofit2.Retrofit;
- import timber.log.Timber;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
+import retrofit2.Retrofit;
+import timber.log.Timber;
 
- public class HomePresenter extends BasePresenter<HomeActivity> {
+public class HomePresenter extends BasePresenter<HomeActivity> {
 
-     private Retrofit basicAuthRetrofit;
-     private Retrofit oauthRetrofit;
-	  private Realm realm;
+	private Retrofit basicAuthRetrofit;
+	private Retrofit oauthRetrofit;
+	private Realm realm;
 
-	 @Inject
-    public HomePresenter(@Named(BasicAuthNetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit basicAuthRetrofit,
-                         @Named(OauthNetworkModule.OAUTH_HTTP_CLIENT) Retrofit oauthRetrofit,
+	@Inject
+	public HomePresenter(@Named(BasicAuthNetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit basicAuthRetrofit,
+						 @Named(OauthNetworkModule.OAUTH_HTTP_CLIENT) Retrofit oauthRetrofit,
 						 Realm realm) {
-        this.basicAuthRetrofit = basicAuthRetrofit;
-        this.oauthRetrofit = oauthRetrofit;
-		  this.realm = realm;
-	 }
+		this.basicAuthRetrofit = basicAuthRetrofit;
+		this.oauthRetrofit = oauthRetrofit;
+		this.realm = realm;
+	}
 
-    @Override
-    protected void onLoad() {
+	@Override
+	protected void onLoad() {
 
-        // First get access token, then get main feed
-        DisposableSingleObserver observer = getUserAccessTokenObservable()
-                .flatMap(response -> getRedditFrontPageObservable(response.accessToken))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<Listing>() {
-                   @Override
-                   public void onSuccess(Listing value) {
+		// First get access token, then get main feed
+		DisposableSingleObserver observer = getUserAccessTokenObservable()
+				.flatMap(response -> getRedditFrontPageObservable(response.accessToken))
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribeWith(new DisposableSingleObserver<Listing>() {
+					@Override
+					public void onSuccess(Listing value) {
 //							  getView().showContent(value);
-							  Listing listing = value;
-							  Timber.d(listing.toString());
-                   }
+						Listing listing = value;
+						Timber.d(listing.toString());
+					}
 
-                   @Override
-                   public void onError(Throwable e) {
+					@Override
+					public void onError(Throwable e) {
 						Timber.e(e);
-                   }
-                });
-        disposables.add(observer);
-
+					}
+				});
+		disposables.add(observer);
 
 
 //        getView().showLoading();
@@ -87,21 +86,21 @@
 //                    screenSwitcher.open(screen);
 //                }
 //        );
-    }
+	}
 
-     /**
-      * Return cached token or retrieve a new one if needed
-	  *
-	  * TODO: cache
-      */
-    private Single<AccessTokenResponse> getUserAccessTokenObservable() {
-        return basicAuthRetrofit.create(RedditService.class)
-                .getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString());
-    }
+	/**
+	 * Return cached token or retrieve a new one if needed
+	 * <p>
+	 * TODO: cache
+	 */
+	private Single<AccessTokenResponse> getUserAccessTokenObservable() {
+		return basicAuthRetrofit.create(RedditService.class)
+				.getNoUserAccessToken(RedditService.GRANT_TYPE, UUID.randomUUID().toString());
+	}
 
-    private Single<Listing> getRedditFrontPageObservable(String accessToken) {
+	private Single<Listing> getRedditFrontPageObservable(String accessToken) {
 		return oauthRetrofit.create(RedditService.class)
-                .getFrontPageListing(StringUtils.getBearerToken(accessToken));
+				.getFrontPageListing(StringUtils.getBearerToken(accessToken));
 //        return Single.just("Reddit front page JSON from access token: " + accessToken);
-    }
+	}
 }
