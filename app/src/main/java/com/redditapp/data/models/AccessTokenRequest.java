@@ -1,4 +1,4 @@
-package com.redditapp.models;
+package com.redditapp.data.models;
 
 import com.squareup.moshi.Json;
 

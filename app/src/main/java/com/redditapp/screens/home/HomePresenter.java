@@ -4,8 +4,8 @@ import com.redditapp.api.RedditService;
 import com.redditapp.base.mvp.BasePresenter;
 import com.redditapp.dagger.modules.BasicAuthNetworkModule;
 import com.redditapp.dagger.modules.OauthNetworkModule;
-import com.redditapp.models.AccessTokenResponse;
-import com.redditapp.models.listing.Listing;
+import com.redditapp.data.models.AccessTokenResponse;
+import com.redditapp.data.models.listing.Listing;
 import com.redditapp.util.StringUtils;
 
 import java.util.UUID;

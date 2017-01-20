@@ -1,7 +1,7 @@
 package com.redditapp.api;
 
-import com.redditapp.models.AccessTokenResponse;
-import com.redditapp.models.listing.Listing;
+import com.redditapp.data.models.AccessTokenResponse;
+import com.redditapp.data.models.listing.Listing;
 
 import io.reactivex.Single;
 import retrofit2.http.Field;

@@ -1,6 +1,6 @@
 package com.redditapp.util.jsonadapters;
 
-import com.redditapp.models.listing.Children;
+import com.redditapp.data.models.listing.Children;
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.ToJson;
 

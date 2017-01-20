@@ -1,4 +1,4 @@
-package com.redditapp.models.listing;
+package com.redditapp.data.models.listing;
 
 import io.realm.RealmModel;
 import io.realm.annotations.RealmClass;
