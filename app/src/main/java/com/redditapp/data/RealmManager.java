@@ -15,6 +15,7 @@ public class RealmManager {
 	private Realm realm;
 	// In-memory cache
 	private Listing listing;
+	private static final int LISTING_KEY = 42;
 
 	@Inject
 	public RealmManager(Realm realm) {
@@ -22,7 +23,8 @@ public class RealmManager {
 	}
 
 	public void updateListingAsync(Listing newListing) {
-		newListing.id = 42;
+		// Only have a single Listing in cache
+		newListing.id = LISTING_KEY;
 		realm.executeTransactionAsync(realm1 -> {
 			listing = realm1.copyToRealmOrUpdate(newListing);
 		});
@@ -33,15 +35,14 @@ public class RealmManager {
 		RealmObject.addChangeListener(listing, changeListener);
 	}
 
-	private Listing getListing() {
+	public Listing getListing() {
 		if (listing == null) {
 			listing = realm.where(Listing.class).findFirst();
 		}
-		//TODO: remove 2 null checks?
+		// If listing both wasn't in in-memory cache or in the DB, then add a blank one to the DB
 		if (listing == null) {
-			// TODO: fix primary key
 			realm.beginTransaction();
-			listing = realm.createObject(Listing.class, 42);
+			listing = realm.createObject(Listing.class, LISTING_KEY);
 			realm.commitTransaction();
 		}
 		return listing;
