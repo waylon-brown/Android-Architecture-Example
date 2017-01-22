@@ -13,7 +13,8 @@ import io.realm.RealmObject;
 public class RealmManager {
 
 	private Realm realm;
-	// In-memory cache
+
+	// Latest listing in in-memory cache
 	private Listing listing;
 	private static final int LISTING_KEY = 42;
 

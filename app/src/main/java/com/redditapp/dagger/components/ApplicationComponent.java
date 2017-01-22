@@ -30,7 +30,7 @@ public interface ApplicationComponent {
     // Places to inject
     void inject(RedditApplication app);
 
-    // TODO: use subcomponenets so child graphs have access to this graph
+    // TODO: use subcomponents so child graphs have access to this graph
     // Exported for child-components.
     Application application();
     @Named(BasicAuthNetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit basicAuthRetrofit();

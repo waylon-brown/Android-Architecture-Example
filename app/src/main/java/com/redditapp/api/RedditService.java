@@ -23,6 +23,4 @@ public interface RedditService {
     @GET("hot")
     Single<Listing> getFrontPageListing(@Header("Authorization") String token);
 
-    // use body example
-//    Observable<AccessTokenResponse> getNoUserAccessToken(@Body AccessTokenRequest user);
 }

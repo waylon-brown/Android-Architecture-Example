@@ -12,9 +12,6 @@ public class BasePresenter<V extends BaseView> {
     private WeakReference<V> view = null;
     protected final CompositeDisposable disposables = new CompositeDisposable();
 
-    // Load has been called for the current view
-    private boolean loaded;
-
     public final void takeView(V view) {
         if (view == null) {
             throw new NullPointerException("Taken view can't be null.");
@@ -32,7 +29,6 @@ public class BasePresenter<V extends BaseView> {
         if (view == null) {
             throw new NullPointerException("Dropped view can't be null.");
         }
-        loaded = false;
         this.view = null;
         onDestroy();
     }
