@@ -7,7 +7,6 @@ import com.redditapp.dagger.modules.OauthNetworkModule;
 import com.redditapp.data.RealmManager;
 import com.redditapp.data.models.AccessTokenResponse;
 import com.redditapp.data.models.listing.Listing;
-import com.redditapp.util.StringUtils;
 
 import java.util.UUID;
 
@@ -54,43 +53,16 @@ public class HomePresenter extends BasePresenter<HomeActivity> {
 					@Override
 					public void onError(Throwable e) {
 						Timber.e(e);
+						getView().showError(e);
 					}
 				});
 		disposables.add(observer);
-
-
-//        getView().showLoading();
-//        request = galleryDatabase.loadGallery(section, new EndlessObserver<List<Image>>() {
-//            @Override
-//            public void onNext(List<Image> images) {
-//                if (images.size() == 0) {
-//                    getView().showEmpty();
-//                } else {
-//                    getView().getAdapter().replaceWith(images);
-//                    getView().showContent();
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Throwable throwable) {
-//                Timber.e(throwable, "Load gallery error");
-//                getView().showError(throwable);
-//            }
-//        });
-//        clicks = getView().observeImageClicks().subscribe(
-//                image -> {
-//                    Timber.d("Image clicked with id = %s", image.first.id);
-//                    ActivityScreen screen = new ImgurImageActivity.Screen(image.first.id);
-//                    screen.attachTransitionView(image.second);
-//                    screenSwitcher.open(screen);
-//                }
-//        );
 	}
 
 	/**
 	 * Return cached token or retrieve a new one if needed
 	 * <p>
-	 * TODO: cache
+	 * TODO: cache access token
 	 */
 	private Single<AccessTokenResponse> getUserAccessTokenObservable() {
 		return basicAuthRetrofit.create(RedditService.class)
@@ -99,7 +71,6 @@ public class HomePresenter extends BasePresenter<HomeActivity> {
 
 	private Single<Listing> getRedditFrontPageObservable(String accessToken) {
 		return oauthRetrofit.create(RedditService.class)
-				.getFrontPageListing(StringUtils.getBearerToken(accessToken));
-//        return Single.just("Reddit front page JSON from access token: " + accessToken);
+				.getFrontPageListing("bearer " + accessToken);
 	}
 }
