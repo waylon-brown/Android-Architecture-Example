@@ -11,6 +11,7 @@ This app hits the Reddit API to demonstrate how one can incorporate MVP principl
 * **Butterknife** is used to remove findById() boilerplate.
 * **Timber** is used as a logging helper.
 * **LeakCanary** is incorporated to inform the dev if any memory leaks have been added.
+
 ## Dagger 2
 ## RxJava 2
 ## Retrofit 2
