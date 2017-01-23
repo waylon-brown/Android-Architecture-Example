@@ -46,7 +46,6 @@ public class HomePresenter extends BasePresenter<HomeActivity> {
 				.subscribeWith(new DisposableSingleObserver<Listing>() {
 					@Override
 					public void onSuccess(Listing value) {
-//							  getView().showContent(value);
 						realmManager.updateListingAsync(value);
 					}
 
