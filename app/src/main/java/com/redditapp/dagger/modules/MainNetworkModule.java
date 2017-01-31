@@ -1,9 +1,9 @@
 package com.redditapp.dagger.modules;
 
-import android.app.Application;
-
 import com.redditapp.util.jsonadapters.ChildrenListJsonAdapter;
 import com.squareup.moshi.Moshi;
+
+import android.app.Application;
 
 import javax.inject.Singleton;
 

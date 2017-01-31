@@ -22,4 +22,27 @@ public class Listing implements RealmModel {
 		this.kind = kind;
 		this.data = data;
 	}
+
+	public static Listing copy(Listing other) {
+		if (other == null) {
+			return null;
+		}
+		Listing copy = new Listing();
+		copy.id = other.getId();
+		copy.kind = other.getKind();
+		copy.data = ListingData.copy(other.getData());
+		return copy;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public String getKind() {
+		return kind;
+	}
+
+	public ListingData getData() {
+		return data;
+	}
 }

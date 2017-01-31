@@ -10,6 +10,7 @@ import android.app.Application;
 
 import javax.inject.Inject;
 
+import io.realm.Realm;
 import timber.log.Timber;
 
 public class RedditApplication extends Application {
@@ -37,6 +38,8 @@ public class RedditApplication extends Application {
 
         buildComponentAndInject();
         registerActivityLifecycleCallbacks(activityLifecycleObserver);
+
+        Realm.init(this);
     }
 
     public void buildComponentAndInject() {

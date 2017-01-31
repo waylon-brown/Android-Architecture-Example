@@ -1,8 +1,5 @@
 package com.redditapp.base.mvp;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-
 import java.lang.ref.WeakReference;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -37,16 +34,7 @@ public class BasePresenter<V extends BaseView> {
         return view.get();
     }
 
-    protected void onLoad() {
-    }
-
     protected void onDestroy() {
         disposables.dispose();
-    }
-
-    protected void onRestore(@NonNull Bundle savedInstanceState) {
-    }
-
-    protected void onSave(@NonNull Bundle outState) {
     }
 }

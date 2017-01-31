@@ -1,28 +1,35 @@
 package com.redditapp.screens.home;
 
-import android.databinding.DataBindingUtil;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
 import com.redditapp.base.mvp.BaseActivity;
 import com.redditapp.dagger.components.DaggerHomeComponent;
 import com.redditapp.dagger.components.HomeComponent;
 import com.redditapp.dagger.modules.ActivityModule;
-import com.redditapp.data.RealmManager;
+import com.redditapp.data.RealmDao;
 import com.redditapp.data.models.listing.Listing;
+import com.redditapp.data.models.listing.Post;
 import com.redditapp.databinding.ActivityHomeBinding;
+import com.redditapp.ui.ListingRecyclerViewAdapter;
+
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+
+import java.net.UnknownHostException;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -30,20 +37,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.RealmChangeListener;
-import timber.log.Timber;
 
 public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
-        implements NavigationView.OnNavigationItemSelectedListener, RealmChangeListener<Listing> {
+        implements NavigationView.OnNavigationItemSelectedListener, RealmChangeListener<Listing>, SwipeRefreshLayout.OnRefreshListener, ListingRecyclerViewAdapter.OnPostClickListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.nav_view) NavigationView navigationView;
+    @BindView(R.id.listing_recycler_view) RecyclerView recyclerView;
+    @BindView(R.id.listing_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
     @Inject
-    RealmManager realmManager;
+    RealmDao mRealmDao;
 
     ActivityHomeBinding binding;
+    ListingRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,23 +61,15 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         setupViews();
-        realmManager.setListingChangeListener(this);
-        presenter.onLoad();
+        mRealmDao.setListingChangeListener(this);
+        onRefresh();
     }
 
     @OnClick(R.id.fab)
     public void fabClicked(View view) {
-        presenter.onLoad();
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
-    }
-
-    /**
-     * From {@link RealmChangeListener}.
-     */
-    @Override
-    public void onChange(Listing element) {
-        Timber.d("Element: " + element.data.children.get(0).data.author);
+        Snackbar.make(fab, "Fab clicked", Snackbar.LENGTH_LONG)
+                .setDuration(Snackbar.LENGTH_LONG)
+                .show();
     }
 
     /**
@@ -89,6 +90,14 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        adapter = new ListingRecyclerViewAdapter(this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
@@ -97,20 +106,57 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
     }
 
     /**
+     * From {@link RealmChangeListener}.
+     */
+    @Override
+    public void onChange(Listing listing) {
+        adapter.updateList(listing);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    /**
+     * From {@link android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener}.
+     */
+    @Override
+    public void onRefresh() {
+        presenter.loadListing();
+    }
+
+    /**
+     * From {@link com.redditapp.ui.ListingRecyclerViewAdapter.OnPostClickListener}.
+     */
+    @Override
+    public void postClicked(Post post) {
+        // TODO: handle post clicks
+    }
+
+    /**
      * BaseView implementations
      */
 
     @Override
-    public void showLoading() { }
+    public void showLoading() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
 
     @Override
-    public void showContent(@NonNull String response) { }
+    public void showError(Throwable throwable) {
+        swipeRefreshLayout.setRefreshing(false);
 
-    @Override
-    public void showEmpty() { }
-
-    @Override
-    public void showError(Throwable throwable) { }
+        if (throwable instanceof UnknownHostException) {
+            Snackbar.make(fab, getString(R.string.error_feed_no_internet), Snackbar.LENGTH_LONG)
+                    .setDuration(Snackbar.LENGTH_LONG)
+                    .show();
+        } else if (throwable instanceof TimeoutException) {
+            Snackbar.make(fab, getString(R.string.error_feed_timeout), Snackbar.LENGTH_LONG)
+                    .setDuration(Snackbar.LENGTH_LONG)
+                    .show();
+        } else {
+            Snackbar.make(fab, getString(R.string.error_feed_generic), Snackbar.LENGTH_LONG)
+                    .setDuration(Snackbar.LENGTH_LONG)
+                    .show();
+        }
+    }
 
     /**
      * From {@link com.redditapp.dagger.FieldInjector}.

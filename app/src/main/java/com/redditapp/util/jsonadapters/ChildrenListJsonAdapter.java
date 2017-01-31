@@ -1,6 +1,6 @@
 package com.redditapp.util.jsonadapters;
 
-import com.redditapp.data.models.listing.Children;
+import com.redditapp.data.models.listing.Post;
 import com.squareup.moshi.FromJson;
 import com.squareup.moshi.ToJson;
 
@@ -17,13 +17,13 @@ import io.realm.RealmList;
 public class ChildrenListJsonAdapter {
 
 	@ToJson
-	public Collection<Children> toJson(RealmList<Children> realmList) {
+	public Collection<Post> toJson(RealmList<Post> realmList) {
 		return realmList;
 	}
 
 	@FromJson
-	public RealmList<Children> fromJson(Collection<Children> collection) {
-		RealmList<Children> realmList = new RealmList<>();
+	public RealmList<Post> fromJson(Collection<Post> collection) {
+		RealmList<Post> realmList = new RealmList<>();
 		realmList.addAll(collection);
 		return realmList;
 	}
