@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'realm-android'
 
 def versionMajor = 1
 def versionMinor = 0
@@ -85,23 +84,19 @@ android {
 
     dataBinding {
         dependencies {
-            /**
-             * Added automatically
-             */
             compile fileTree(dir: 'libs', include: ['*.jar'])
 
             androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
                 exclude group: 'com.android.support', module: 'support-annotations'
             })
-            compile 'com.android.support:appcompat-v7:25.1.0'
-            compile 'com.android.support:design:25.1.0'
-            compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-
             testCompile 'junit:junit:4.12'
 
-            /**
-             * I've added
-             */
+            // Google
+            compile 'com.android.support:appcompat-v7:25.1.1'
+            compile 'com.android.support:design:25.1.1'
+            compile 'com.android.support:cardview-v7:25.1.1'
+            compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+
             compile 'com.jakewharton:butterknife:8.4.0'
             annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 
@@ -111,6 +106,14 @@ android {
             compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
 
             compile 'com.squareup.moshi:moshi:1.3.1'
+
+            compile 'com.github.bumptech.glide:glide:3.7.0'
+
+            // Fonts
+            compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+            compile "com.mikepenz:iconics-core:2.8.2@aar"
+            // List of icons: https://material.io/icons/
+            compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar'
 
             // TODO: add AutoValue
 //            compile "com.google.auto.value:auto-value:1.2"
@@ -122,8 +125,8 @@ android {
             compile 'io.reactivex.rxjava2:rxjava:2.0.2'
             compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
-            compile 'com.google.dagger:dagger:2.8'
-            annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
+            compile 'com.google.dagger:dagger:2.9'
+            annotationProcessor 'com.google.dagger:dagger-compiler:2.9'
 
             // TODO: add ProcessPhoenix
             //compile 'com.jakewharton:process-phoenix:1.1.1'

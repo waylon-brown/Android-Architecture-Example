@@ -7,11 +7,12 @@ import com.redditapp.util.CrashlyticsTree;
 import com.squareup.leakcanary.LeakCanary;
 
 import android.app.Application;
+import android.os.StrictMode;
 
 import javax.inject.Inject;
 
-import io.realm.Realm;
 import timber.log.Timber;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class RedditApplication extends Application {
 
@@ -32,6 +33,16 @@ public class RedditApplication extends Application {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
+
+            // Log if we're doing anything crazy on the main thread
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build());
         } else {
             Timber.plant(new CrashlyticsTree());
         }
@@ -39,7 +50,13 @@ public class RedditApplication extends Application {
         buildComponentAndInject();
         registerActivityLifecycleCallbacks(activityLifecycleObserver);
 
-        Realm.init(this);
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/Roboto-Light.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        );
+
+
     }
 
     public void buildComponentAndInject() {

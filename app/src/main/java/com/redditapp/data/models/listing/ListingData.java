@@ -2,42 +2,41 @@ package com.redditapp.data.models.listing;
 
 import com.squareup.moshi.Json;
 
-import io.realm.RealmList;
-import io.realm.RealmModel;
-import io.realm.annotations.RealmClass;
+import java.util.ArrayList;
+import java.util.List;
 
-@RealmClass
-public class ListingData implements RealmModel {
 
-	public String modhash;
-	@Json(name = "children")
-	public RealmList<Post> posts;
-	public String after;
-	public String before;
+public class ListingData {
 
-	public ListingData() {
+	private final String modhash;
+	@Json(name = "children") private final List<Post> posts;
+	private final String after;
+	private final String before;
+
+	public ListingData(String modhash, List<Post> posts, String after, String before) {
+		this.modhash = modhash;
+		this.posts = posts;
+		this.after = after;
+		this.before = before;
 	}
 
 	public static ListingData copy(ListingData other) {
 		if (other == null) {
 			return null;
 		}
-		ListingData copy = new ListingData();
-		copy.modhash = other.getModhash();
+		List<Post> postsCopy = null;
 		if (other.getPosts() != null) {
-			copy.posts = new RealmList<>();
-			copy.posts.addAll(other.getPosts());
+			postsCopy = new ArrayList<>();
+			postsCopy.addAll(other.getPosts());
 		}
-		copy.after = other.getAfter();
-		copy.before = other.getBefore();
-		return copy;
+		return new ListingData(other.getModhash(), postsCopy, other.getAfter(), other.getBefore());
 	}
 
 	public String getModhash() {
 		return modhash;
 	}
 
-	public RealmList<Post> getPosts() {
+	public List<Post> getPosts() {
 		return posts;
 	}
 

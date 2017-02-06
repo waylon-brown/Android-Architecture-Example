@@ -8,7 +8,8 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_home"
-    tools:context=".screens.home.HomeActivity">
+    tools:context=".screens.home.HomeActivity"
+    android:background="@color/listBackground">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/listing_swipe_refresh_layout"
@@ -19,9 +20,10 @@
             android:id="@+id/listing_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical"
+            android:clipToPadding="false"
+            android:paddingBottom="6dp"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
 
 </FrameLayout>

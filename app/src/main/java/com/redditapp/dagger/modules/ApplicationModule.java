@@ -7,13 +7,13 @@ import android.preference.PreferenceManager;
 
 import com.redditapp.ActivityLifecycleObserver;
 import com.redditapp.RedditApplication;
+import com.redditapp.data.SharedPrefsHelper;
+import com.squareup.moshi.Moshi;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.realm.Realm;
 
 /**
  * Application-wide dependencies.
@@ -34,7 +34,6 @@ public final class ApplicationModule {
 
     @Provides
     @Singleton
-    @Named("ApplicationContext")
     Context provideContext() {
         return app;
     }
@@ -53,8 +52,7 @@ public final class ApplicationModule {
 
     @Provides
     @Singleton
-    Realm provideRealm(@Named("ApplicationContext") Context context) {
-        Realm.init(context);
-        return Realm.getDefaultInstance();
+    SharedPrefsHelper provideSharedPrefsHelper(Context context, Moshi moshi) {
+        return new SharedPrefsHelper(context, moshi);
     }
 }
