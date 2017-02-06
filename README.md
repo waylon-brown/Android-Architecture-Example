@@ -9,10 +9,14 @@ This app hits the Reddit API to demonstrate how one can incorporate MVP principl
 * findViewById() boilerplate is moved over to annotations with **Butterknife**.
 * A logging helper is added with **Timber**.
 * We detect and inform the dev of any new memory leaks with **LeakCanary**.
+* Image loading/caching is done with **Glide**.
 * ~~Retrieval of posts are persisted to a database cache with **Realm**.~~
 
 ## Dagger 2
 I've used scoping with Dagger 2 (see ActivityScope.java) to allow singletons to have a lifetime of the Android activity itself.
+
+## Data binding
+So while we update UI through Realm callbacks, using DataBinding we don't have to call any setText() or setBackgroundImage() anywhere, we just update the variables that those UI elements correspond to.
 
 ## Realm
 ~~Updating of UI elements is done through callbacks of the cache so that all that needs to happen with new data is to update the cache. This provides a 1-to-1 mapping of what you see in the UI and the underlying data.~~
@@ -28,6 +32,3 @@ At this point the project doesn't have a DB solution, which is pretty fine for t
 * You can't have multiple primary keys on an object which is a pretty common things amongst databases (maybe I'm just carrying this over from SQLite and shouldn't be).
 * Threading is a nightmare. Constant "you can't access this object on this thread" errors. RxJava helps with this, but sometimes I just want to use an object I've already queried on without the verbosity of thread-hopping, and there's no way I was going to create seperate POJOs that live outside of Realm just to address this. I understand it's worth it for the always-live objects, but at this point I'm already complaining right?
 * None of my POJOs could be immutable. Realm requires a no-arg constructor meaning I can't use final fields, and other than that all fields either need to be public or have both getters and setters.
- 
-## Data binding
-So while we update UI through Realm callbacks, using DataBinding we don't have to call any setText() or setBackgroundImage() anywhere, we just update the variables that those UI elements correspond to.
