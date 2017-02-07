@@ -1,18 +1,21 @@
 package com.redditapp.data.models.listing;
 
-import java.util.List;
+import io.realm.RealmList;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
-public class Preview {
+@RealmClass
+public class Preview implements RealmModel {
 
-	private List<PreviewImage> images;
+	private RealmList<PreviewImage> images;
 
 	public Preview() {}
 
-	public List<PreviewImage> getImages() {
+	public RealmList<PreviewImage> getImages() {
 		return images;
 	}
 
-	public void setImages(List<PreviewImage> images) {
+	public void setImages(RealmList<PreviewImage> images) {
 		this.images = images;
 	}
 

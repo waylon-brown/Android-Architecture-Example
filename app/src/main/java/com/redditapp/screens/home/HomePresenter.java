@@ -3,22 +3,25 @@ package com.redditapp.screens.home;
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.redditapp.api.RxApiCallers;
 import com.redditapp.base.mvp.BasePresenter;
+import com.redditapp.data.RealmDao;
 import com.redditapp.data.models.listing.Listing;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class HomePresenter extends BasePresenter<HomeView> {
+public class HomePresenter extends BasePresenter<HomeActivity> {
 
 	private RxApiCallers rxApiCallers;
+	private RealmDao mRealmDao;
 
 	@Inject
-	public HomePresenter(RxApiCallers rxApiCallers) {
+	public HomePresenter(RxApiCallers rxApiCallers,
+						 RealmDao realmDao) {
 		this.rxApiCallers = rxApiCallers;
+		this.mRealmDao = realmDao;
 	}
 
 	protected void loadListing() {
@@ -26,13 +29,12 @@ public class HomePresenter extends BasePresenter<HomeView> {
 
 		// First get access token, then get main feed
 		DisposableSingleObserver observer = rxApiCallers
-				.getListing()
-				.subscribeOn(Schedulers.io())
+				.updateCurrentListing()
 				.observeOn(AndroidSchedulers.mainThread())
 				.subscribeWith(new DisposableSingleObserver<Listing>() {
 					@Override
-					public void onSuccess(Listing listing) {
-						getView().showContent(listing);
+					public void onSuccess(Listing value) {
+						// Updated list upstream
 					}
 
 					@Override
@@ -49,5 +51,12 @@ public class HomePresenter extends BasePresenter<HomeView> {
 					}
 				});
 		disposables.add(observer);
+	}
+
+	/**
+	 * Load out-of-date listing from cache.
+	 */
+	public Listing quickLoadListing() {
+		return mRealmDao.getListing();
 	}
 }

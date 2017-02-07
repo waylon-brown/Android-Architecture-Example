@@ -1,19 +1,19 @@
 package com.redditapp.dagger.components;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.redditapp.RedditApplication;
 import com.redditapp.dagger.modules.ApplicationModule;
 import com.redditapp.dagger.modules.BasicAuthNetworkModule;
 import com.redditapp.dagger.modules.MainNetworkModule;
 import com.redditapp.dagger.modules.OauthNetworkModule;
-import com.squareup.moshi.Moshi;
+import com.redditapp.data.RealmDao;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import io.realm.Realm;
 import retrofit2.Retrofit;
 
 /**
@@ -33,8 +33,8 @@ public interface ApplicationComponent {
     // TODO: use subcomponents so child graphs have access to this graph
     // Exported for child-components.
     Application application();
-    Context context();
-    Moshi moshi();
     @Named(BasicAuthNetworkModule.BASIC_AUTH_HTTP_CLIENT) Retrofit basicAuthRetrofit();
     @Named(OauthNetworkModule.OAUTH_HTTP_CLIENT) Retrofit oauthRetrofit();
+    Realm realm();
+    RealmDao realmManager();
 }

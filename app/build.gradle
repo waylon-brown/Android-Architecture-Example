@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'realm-android'
 
 def versionMajor = 1
 def versionMinor = 0
@@ -109,11 +110,11 @@ android {
 
             compile 'com.github.bumptech.glide:glide:3.7.0'
 
-            // Fonts
             compile 'uk.co.chrisjenx:calligraphy:2.2.0'
-            compile "com.mikepenz:iconics-core:2.8.2@aar"
-            // List of icons: https://material.io/icons/
-            compile 'com.mikepenz:google-material-typeface:2.2.0.3.original@aar'
+
+            compile 'com.facebook.stetho:stetho:1.4.2'
+            compile 'com.facebook.stetho:stetho-okhttp3:1.4.2'
+            compile 'com.uphyca:stetho_realm:2.0.0'
 
             // TODO: add AutoValue
 //            compile "com.google.auto.value:auto-value:1.2"
@@ -125,8 +126,8 @@ android {
             compile 'io.reactivex.rxjava2:rxjava:2.0.2'
             compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
-            compile 'com.google.dagger:dagger:2.9'
-            annotationProcessor 'com.google.dagger:dagger-compiler:2.9'
+            compile 'com.google.dagger:dagger:2.8'
+            annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
 
             // TODO: add ProcessPhoenix
             //compile 'com.jakewharton:process-phoenix:1.1.1'

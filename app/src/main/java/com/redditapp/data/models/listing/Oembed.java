@@ -2,7 +2,11 @@ package com.redditapp.data.models.listing;
 
 import com.squareup.moshi.Json;
 
-public class Oembed {
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
+
+@RealmClass
+public class Oembed implements RealmModel {
 
 	private int width;
 	private int height;

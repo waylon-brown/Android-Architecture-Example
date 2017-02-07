@@ -3,18 +3,34 @@ package com.redditapp.data.models;
 
 import com.squareup.moshi.Json;
 
-public class AccessTokenResponse {
+import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
+
+@RealmClass
+public class AccessTokenResponse implements RealmModel {
+
+    @PrimaryKey
+    public int id;
 
     @Json(name="access_token") private String accessToken;
     @Json(name="token_type") private String tokenType;
     @Json(name="device_id") private String deviceId;
-    @Json(name="expires_in") private int expiresIn; // In seconds
+    @Json(name="expires_in") private int expiresIn;
     private String scope;
 
     // Manually calculated from time first retrieved + expiresIn
     private long expiresAt = 0;
 
     public AccessTokenResponse() {}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getAccessToken() {
         return accessToken;

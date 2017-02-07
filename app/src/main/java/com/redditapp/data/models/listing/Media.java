@@ -1,6 +1,10 @@
 package com.redditapp.data.models.listing;
 
-public class Media {
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
+
+@RealmClass
+public class Media implements RealmModel {
 
 	private String type;
 	private Oembed oembed;

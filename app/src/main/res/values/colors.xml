@@ -4,21 +4,18 @@
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#009688</color>
 
-    <color name="primary_text">#333333</color>
-    <color name="secondary_text">#777777</color>
-    <color name="header_text">#777777</color>
-
-    <color name="black">#000</color>
-
-    <color name="listBackground">@color/grey_300</color>
-
-    <!-- https://www.materialui.co/colors -->
-
     <color name="grey_50">#FAFAFA</color>
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
 
+    <color name="primary_text">#333333</color>
+    <color name="secondary_text">#777777</color>
+    <color name="header_text">#777777</color>
+
     <color name="green_600">#43A047</color>
 
     <color name="orange_500">#FF9800</color>
+
+    <!-- TODO: use one of the greys -->
+    <color name="listBackground">#D8D8D8</color>
 </resources>

@@ -1,18 +1,5 @@
 package com.redditapp.screens.home;
 
-import com.redditapp.R;
-import com.redditapp.RedditApplication;
-import com.redditapp.base.mvp.BaseActivity;
-import com.redditapp.dagger.components.DaggerHomeComponent;
-import com.redditapp.dagger.components.HomeComponent;
-import com.redditapp.dagger.modules.ActivityModule;
-import com.redditapp.data.models.listing.Listing;
-import com.redditapp.data.models.listing.Post;
-import com.redditapp.databinding.ActivityHomeBinding;
-import com.redditapp.ui.InvalidateItemDecorDataObserver;
-import com.redditapp.ui.ListingAdapter;
-import com.redditapp.ui.StaggeredGridItemDecoration;
-
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -29,15 +16,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.redditapp.R;
+import com.redditapp.RedditApplication;
+import com.redditapp.base.mvp.BaseActivity;
+import com.redditapp.dagger.components.DaggerHomeComponent;
+import com.redditapp.dagger.components.HomeComponent;
+import com.redditapp.dagger.modules.ActivityModule;
+import com.redditapp.data.RealmDao;
+import com.redditapp.data.models.listing.Listing;
+import com.redditapp.data.models.listing.Post;
+import com.redditapp.databinding.ActivityHomeBinding;
+import com.redditapp.ui.ListingRecyclerViewAdapter;
+import com.redditapp.ui.StaggeredGridItemDecoration;
+import com.redditapp.util.ViewUtils;
+
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.RealmChangeListener;
 
 public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
-        implements HomeView, NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener, ListingAdapter.OnPostClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, RealmChangeListener<Listing>, SwipeRefreshLayout.OnRefreshListener, ListingRecyclerViewAdapter.OnPostClickListener {
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
@@ -46,8 +50,11 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
     @BindView(R.id.listing_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.listing_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
+    @Inject
+    RealmDao mRealmDao;
+
     ActivityHomeBinding binding;
-    ListingAdapter adapter;
+    ListingRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +63,14 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         setupViews();
+        mRealmDao.setListingChangeListener(this);
         onRefresh();
+
+        // Though we're fetching new posts, immediately display cached posts in the meantime
+        Listing cachedListing = presenter.quickLoadListing();
+        if (cachedListing != null && cachedListing.getData() != null) {
+            adapter.updateList(cachedListing);
+        }
     }
 
     @OnClick(R.id.fab)
@@ -86,12 +100,11 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         navigationView.setNavigationItemSelectedListener(this);
 
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        adapter = new ListingAdapter(this);
-        recyclerView.addItemDecoration(new StaggeredGridItemDecoration(this));
+        adapter = new ListingRecyclerViewAdapter(this);
+        recyclerView.addItemDecoration(new StaggeredGridItemDecoration(ViewUtils.dpToPx(this, 6)));
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        adapter.registerAdapterDataObserver(new InvalidateItemDecorDataObserver(recyclerView));
 
         swipeRefreshLayout.setOnRefreshListener(this);
     }
@@ -99,6 +112,15 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
     @Override
     protected int getToolbarTitle() {
         return R.string.home_activity_title;
+    }
+
+    /**
+     * From {@link RealmChangeListener}.
+     */
+    @Override
+    public void onChange(Listing listing) {
+        adapter.updateList(listing);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     /**
@@ -110,21 +132,16 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
     }
 
     /**
-     * From {@link ListingAdapter.OnPostClickListener}.
+     * From {@link com.redditapp.ui.ListingRecyclerViewAdapter.OnPostClickListener}.
      */
     @Override
     public void postClicked(Post post) {
+        // TODO: handle post clicks
     }
 
     /**
-     * HomeView and BaseView implementations
+     * BaseView implementations
      */
-
-    @Override
-    public void showContent(Listing listing) {
-        adapter.updateList(listing);
-        swipeRefreshLayout.setRefreshing(false);
-    }
 
     @Override
     public void showLoading() {

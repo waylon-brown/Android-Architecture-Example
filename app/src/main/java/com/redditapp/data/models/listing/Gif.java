@@ -1,6 +1,10 @@
 package com.redditapp.data.models.listing;
 
-public class Gif {
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
+
+@RealmClass
+public class Gif implements RealmModel {
 
     private Source source;
 

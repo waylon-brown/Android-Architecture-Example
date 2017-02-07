@@ -1,16 +1,18 @@
 package com.redditapp;
 
+import com.facebook.stetho.Stetho;
 import com.redditapp.dagger.components.ApplicationComponent;
 import com.redditapp.dagger.components.DaggerApplicationComponent;
 import com.redditapp.dagger.modules.ApplicationModule;
 import com.redditapp.util.CrashlyticsTree;
 import com.squareup.leakcanary.LeakCanary;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import android.app.Application;
-import android.os.StrictMode;
 
 import javax.inject.Inject;
 
+import io.realm.Realm;
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -33,22 +35,20 @@ public class RedditApplication extends Application {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
-
-            // Log if we're doing anything crazy on the main thread
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .build());
+            
+            Stetho.initialize(
+                    Stetho.newInitializerBuilder(this)
+                            .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                            .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                            .build());
         } else {
             Timber.plant(new CrashlyticsTree());
         }
 
         buildComponentAndInject();
         registerActivityLifecycleCallbacks(activityLifecycleObserver);
+
+        Realm.init(this);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath("fonts/Roboto-Light.ttf")

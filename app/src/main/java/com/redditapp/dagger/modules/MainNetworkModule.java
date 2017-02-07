@@ -1,5 +1,7 @@
 package com.redditapp.dagger.modules;
 
+import com.redditapp.util.jsonadapters.PostListJsonAdapter;
+import com.redditapp.util.jsonadapters.PreviewImageListJsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import android.app.Application;
@@ -23,6 +25,7 @@ public class MainNetworkModule {
 
     @Provides
     @Singleton
+    //TODO: verify good cache size
     Cache provideHttpCache(Application application) {
         int cacheSize = 10 * 1024 * 1024;
         Cache cache = new Cache(application.getCacheDir(), cacheSize);
@@ -33,6 +36,8 @@ public class MainNetworkModule {
     @Singleton
     Moshi provideMoshi() {
         return new Moshi.Builder()
+                .add(new PostListJsonAdapter())
+                .add(new PreviewImageListJsonAdapter())
                 .build();
     }
 

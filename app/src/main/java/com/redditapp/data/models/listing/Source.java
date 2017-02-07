@@ -1,6 +1,10 @@
 package com.redditapp.data.models.listing;
 
-public class Source {
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
+
+@RealmClass
+public class Source implements RealmModel {
 
 	private String url;
 	private int width;

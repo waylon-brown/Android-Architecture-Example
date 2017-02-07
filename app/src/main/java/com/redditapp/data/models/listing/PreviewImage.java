@@ -1,6 +1,10 @@
 package com.redditapp.data.models.listing;
 
-public class PreviewImage {
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
+
+@RealmClass
+public class PreviewImage implements RealmModel {
 
 	private Source source;
 	private Variants variants;

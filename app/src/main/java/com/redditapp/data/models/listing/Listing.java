@@ -1,76 +1,74 @@
 package com.redditapp.data.models.listing;
 
+import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
+
 /**
  * Use https://www.reddit.com/hot.json as an example listing response.
  */
-public class Listing {
+@RealmClass
+public class Listing implements RealmModel {
 
-	private final String kind;
-	private final ListingData data;
+	@PrimaryKey private int id;
+	private String kind;
+	private ListingData data;
 
-	public Listing(String kind, ListingData listingData) {
-		this.kind = kind;
-		this.data = listingData;
-	}
+	public Listing() {}
 
 	public static Listing copy(Listing other) {
 		if (other == null) {
 			return null;
 		}
-		return new Listing(other.getKind(), ListingData.copy(other.getData()));
+		Listing copy = new Listing();
+		copy.id = other.getId();
+		copy.kind = other.getKind();
+		copy.data = ListingData.copy(other.getData());
+		return copy;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getKind() {
 		return kind;
+	}
+
+	public void setKind(String kind) {
+		this.kind = kind;
 	}
 
 	public ListingData getData() {
 		return data;
 	}
 
-	/**
-	 * Classify post type for {@link com.redditapp.ui.ListingAdapter} based on data from API.
-     */
-	public static void classifyPosts(Listing listing) {
-		if (listing.getData().getPosts() != null) {
-			for(Post post : listing.getData().getPosts()) {
-				post.getData().setPostType(classifyPost(post.getData()));
-			}
-		}
+	public void setData(ListingData data) {
+		this.data = data;
 	}
 
-	// TODO: make this cleaner
-	private static PostData.PostType classifyPost(PostData postData) {
-		String postHint = postData.getPostHint();
-		if (postHint != null
-				&& postHint.equals("rich:video")
-				&& postData.getMedia() != null
-				&& postData.getMedia().getOembed() != null
-				&& postData.getMedia().getOembed().getThumbnailUrl() != null) {
-			return PostData.PostType.GFYCAT;
-		}
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
-		Preview preview = postData.getPreview();
-		if (postHint != null
-				&& postHint.equals("link")
-				&& preview != null
-				&& preview.getImages() != null
-				&& preview.getImages().get(0) != null
-				&& preview.getImages().get(0).getVariants() != null
-				&& preview.getImages().get(0).getVariants().getGif() != null
-				&& preview.getImages().get(0).getVariants().getGif().getSource() != null
-				&& preview.getImages().get(0).getVariants().getGif().getSource().getUrl() != null) {
-			return PostData.PostType.IMGUR_GIF;
-		}
+		Listing listing = (Listing) o;
 
-		if (preview != null
-				&& preview != null
-				&& preview.getImages().size() > 0
-				&& preview.getImages().get(0).getSource() != null) {
-			return PostData.PostType.IMAGE;
-		}
+		if (id != listing.id) return false;
+		if (kind != null ? !kind.equals(listing.kind) : listing.kind != null) return false;
+		return data != null ? data.equals(listing.data) : listing.data == null;
 
-		return PostData.PostType.TEXT;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id;
+		result = 31 * result + (kind != null ? kind.hashCode() : 0);
+		result = 31 * result + (data != null ? data.hashCode() : 0);
+		return result;
 	}
 }

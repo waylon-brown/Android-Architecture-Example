@@ -54,10 +54,8 @@
                 android:id="@+id/post_subreddit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/secondary_text"
-                android:lines="1"
-                android:ellipsize="end"
-                tools:text="r/what_sub at domain.com"
+                android:textColor="@color/colorPrimary"
+                tools:text="r/what_sub"
                 android:textSize="10sp"
                 android:layout_marginTop="0dp"/>
 

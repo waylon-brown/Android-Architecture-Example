@@ -1,27 +1,35 @@
 package com.redditapp.data.models.listing;
 
-import com.redditapp.ui.ListingAdapter;
+import io.realm.RealmModel;
+import io.realm.annotations.RealmClass;
 
-public class Post {
+@RealmClass
+public class Post implements RealmModel {
 
-	private final String kind;
-	private final PostData data;
+	private String kind;
+	private PostData data;
 
-	public Post(String kind, PostData data) {
-		this.kind = kind;
-		this.data = data;
+	public Post() {
 	}
 
 	public String getKind() {
 		return kind;
 	}
 
+	public void setKind(String kind) {
+		this.kind = kind;
+	}
+
 	public PostData getData() {
 		return data;
 	}
 
+	public void setData(PostData data) {
+		this.data = data;
+	}
+
 	/**
-	 * Used for DiffUtil in {@link ListingAdapter}
+	 * Used for DiffUtil in {@link com.redditapp.ui.ListingRecyclerViewAdapter}
 	 */
 	@Override
 	public boolean equals(Object o) {
@@ -30,12 +38,16 @@ public class Post {
 
 		Post post = (Post) o;
 
+		if (kind != null ? !kind.equals(post.kind) : post.kind != null) return false;
 		return data != null ? data.equals(post.data) : post.data == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		return data != null ? data.hashCode() : 0;
+		int result = kind != null ? kind.hashCode() : 0;
+		result = 31 * result + (data != null ? data.hashCode() : 0);
+		return result;
 	}
+
 }
