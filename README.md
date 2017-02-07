@@ -13,13 +13,26 @@ This app demonstrates how one can incorporate MVP principles into their applicat
 * ~~Retrieval of posts are persisted to a database cache with **Realm**.~~
 
 ## Dagger 2
-I've used scoping with Dagger 2 (see ActivityScope.java) to allow singletons to have a lifetime of the Android activity itself.
+I've used scoping with Dagger 2 (see ActivityScope.java) to allow singletons to have a lifetime of the Android activity itself. There is an application-scoped (technically Singleton-scoped) component that uses application-wide modules, and child components of this are implemented through component dependencies rather than actual subcomponents. 
+
+I chose to use component dependencies over subcomponents (both accomplish the same thing in different ways) since it's less verbose, requiring a single "dependencies" annotation parameter as seen in [HomeComponent](https://github.com/WaylonBrown/Android-Architecture-Example/blob/master/app/src/main/java/com/redditapp/dagger/components/HomeComponent.java) over the subcomponents route of tying the subcomponent to a seperate module that's consumed by the parent component. The only difference is that child dependencies have to be defined in the parent component as seen in [ApplicationComponent](https://github.com/WaylonBrown/Android-Architecture-Example/blob/master/app/src/main/java/com/redditapp/dagger/components/ApplicationComponent.java) but I think this is a good thing as a reminder of what dependencies might be used outside of the main parent graph.
+
+## RxJava
+If you'd like to see the meat and potatoes of how I've used RxJava to get the authentication token from the API, call the API endpoint for the actual data on its success, and have a timeout (which is a pretty standard Rx stream) you can see it all at [HomePresenter](https://github.com/WaylonBrown/Android-Architecture-Example/blob/master/app/src/main/java/com/redditapp/screens/home/HomePresenter.java) and [RxApiCallers](https://github.com/WaylonBrown/Android-Architecture-Example/blob/master/app/src/main/java/com/redditapp/api/RxApiCallers.java).
+
+Its actually a lot more interesting if you check it out on the "Realm" branch, as it ties in choosing between data from the cache or the network, handling expired tokens, and thread-hopping between the background thread and the UI thread to read and write from the cache (Realm is kinda weird like that unless you want to run a brand new query each time).
 
 ## Data binding
-So while we update UI through Realm callbacks, using DataBinding we don't have to call any setText() or setBackgroundImage() anywhere, we just update the variables that those UI elements correspond to.
+So while we update UI through Realm callbacks, using DataBinding we don't have to call any setText() or setBackgroundImage() anywhere, we just update the variables that those UI elements correspond to. 
+
+You can see this working in action with a RecyclerView in [ListingAdapter](https://github.com/WaylonBrown/Android-Architecture-Example/blob/master/app/src/main/java/com/redditapp/ui/ListingAdapter.java) which is great, all you have to do is bind the object that the view holder is backed by and the binding takes care of the rest. 
+
+You can also see how data binding works with reusable layouts in [list_item_post_image.xml](https://github.com/WaylonBrown/Android-Architecture-Example/blob/master/app/src/main/res/layout/list_item_post_image.xml).
 
 ## Realm
 ~~Updating of UI elements is done through callbacks of the cache so that all that needs to happen with new data is to update the cache. This provides a 1-to-1 mapping of what you see in the UI and the underlying data.~~
+ 
+*If you want to see the project working with Realm, it's in a seperate "realm" branch.*
  
 Well, Realm was nice while it lasted in this project, but it didn't last. At some point, the cons of using Realm ended up far outweighing the pros that I had initially seen when having the Realm implementation working as expected. 
 
