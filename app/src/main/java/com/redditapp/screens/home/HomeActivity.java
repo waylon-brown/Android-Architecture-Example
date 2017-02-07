@@ -1,18 +1,6 @@
 package com.redditapp.screens.home;
 
-import com.redditapp.R;
-import com.redditapp.RedditApplication;
-import com.redditapp.base.mvp.BaseActivity;
-import com.redditapp.dagger.components.DaggerHomeComponent;
-import com.redditapp.dagger.components.HomeComponent;
-import com.redditapp.dagger.modules.ActivityModule;
-import com.redditapp.data.models.listing.Listing;
-import com.redditapp.data.models.listing.Post;
-import com.redditapp.databinding.ActivityHomeBinding;
-import com.redditapp.ui.InvalidateItemDecorDataObserver;
-import com.redditapp.ui.ListingAdapter;
-import com.redditapp.ui.StaggeredGridItemDecoration;
-
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -28,6 +16,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.redditapp.R;
+import com.redditapp.RedditApplication;
+import com.redditapp.mvp.BaseActivity;
+import com.redditapp.dagger.components.DaggerHomeComponent;
+import com.redditapp.dagger.components.HomeComponent;
+import com.redditapp.dagger.modules.ActivityModule;
+import com.redditapp.data.models.listing.Listing;
+import com.redditapp.data.models.listing.PostData;
+import com.redditapp.databinding.ActivityHomeBinding;
+import com.redditapp.ui.InvalidateItemDecorDataObserver;
+import com.redditapp.ui.ListingAdapter;
+import com.redditapp.ui.StaggeredGridItemDecoration;
 
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
@@ -46,8 +47,9 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
     @BindView(R.id.listing_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.listing_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
-    ActivityHomeBinding binding;
-    ListingAdapter adapter;
+    private ActivityHomeBinding binding;
+    private ListingAdapter adapter;
+    private boolean screenRotated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,12 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         setSupportActionBar(toolbar);
         setupViews();
         onRefresh();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        screenRotated = true;
+        super.onConfigurationChanged(newConfig);
     }
 
     @OnClick(R.id.fab)
@@ -91,6 +99,18 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            /**
+             * If the screen just rotated, we want to recalculate list item heights and item decorations.
+             *
+             * More on this at {@link ListingAdapter.com.redditapp.ui.ListingAdapter.PostImageViewHolder#setImage}
+              */
+			if (screenRotated) {
+				adapter.invalidateCardHeight();
+                recyclerView.invalidateItemDecorations();
+			}
+			screenRotated = false;
+		});
         adapter.registerAdapterDataObserver(new InvalidateItemDecorDataObserver(recyclerView));
 
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -113,7 +133,7 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
      * From {@link ListingAdapter.OnPostClickListener}.
      */
     @Override
-    public void postClicked(Post post) {
+    public void postClicked(PostData postData) {
     }
 
     /**

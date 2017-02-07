@@ -1,99 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/card_corner_radius"
-    app:cardElevation="4dp"
-    app:cardPreventCornerOverlap="false"
-    >
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
+    <data class="PostImageBinding">
+        <variable name="postData" type="com.redditapp.data.models.listing.PostData"/>
+        <variable name="onPostClickListener" type="com.redditapp.ui.ListingAdapter.OnPostClickListener"/>
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="4dp"
+        app:cardPreventCornerOverlap="false"
+        android:onClick="@{() -> onPostClickListener.postClicked(postData)}"
+        tools:layout_width="180dp" >
 
-        <ImageView
-            android:id="@+id/post_image"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            tools:src="@drawable/sample_post_image"
-            tools:layout_height="280dp"/>
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/bottom_layout"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/post_image"
-            android:layout_margin="6dp">
-
-            <TextView
-                android:id="@+id/post_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
-                tools:text="This is a title of a post that is a title to a post that\'s a title."
-                android:textSize="15sp"/>
-
-            <TextView
-                android:id="@+id/post_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/secondary_text"
-                android:lines="1"
-                android:ellipsize="end"
-                tools:text="X hours ago by u/example_user to"
-                android:textSize="10sp"
-                android:layout_marginTop="4dp"/>
-
-            <TextView
-                android:id="@+id/post_subreddit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/secondary_text"
-                android:lines="1"
-                android:ellipsize="end"
-                tools:text="r/what_sub at domain.com"
-                android:textSize="10sp"
-                android:layout_marginTop="0dp"/>
-
-            <RelativeLayout
+            <ImageView
+                android:id="@+id/post_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp">
+                android:scaleType="fitXY"
+                tools:src="@drawable/sample_post_image"
+                tools:layout_height="120dp"/>
 
-                <TextView
-                    android:id="@+id/post_comments"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="2000 comments"
-                    android:textColor="@color/secondary_text"
-                    android:textSize="11sp"/>
+            <include layout="@layout/list_item_post_common_details"
+                     app:postData="@{postData}"
+                     app:onPostClickListener="@{onPostClickListener}"/>
 
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true">
+        </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/post_points"
-                        android:layout_alignParentRight="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="14000pts"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="11sp"/>
+    </android.support.v7.widget.CardView>
 
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-</android.support.v7.widget.CardView>
+</layout>

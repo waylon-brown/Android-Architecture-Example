@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="postData" type="com.redditapp.data.models.listing.PostData"/>
+        <variable name="onPostClickListener" type="com.redditapp.ui.ListingAdapter.OnPostClickListener"/>
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/post_image"
+        android:layout_margin="6dp">
+
+        <TextView
+            android:id="@+id/post_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            tools:text="This is a title of a post that is a title to a post that\'s a title."
+            android:text="@{postData.title}"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/post_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondary_text"
+            android:lines="1"
+            android:ellipsize="end"
+            tools:text="X hours ago by u/example_user to"
+            android:textSize="10sp"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/post_subreddit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondary_text"
+            android:lines="1"
+            android:ellipsize="end"
+            tools:text="r/what_sub at domain.com"
+            android:textSize="10sp"
+            android:layout_marginTop="0dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/post_comments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="2000 comments"
+                android:text='@{postData.numComments + " comments"}'
+                android:textColor="@color/secondary_text"
+                android:textSize="11sp"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true">
+
+                <TextView
+                    android:id="@+id/post_points"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="14000pts"
+                    android:text='@{postData.score + " pts"}'
+                    android:textColor="@color/secondary_text"
+                    android:textSize="11sp"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</layout>

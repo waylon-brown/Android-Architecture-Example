@@ -40,34 +40,40 @@ public class Listing {
 		}
 	}
 
-	// TODO: make this cleaner
+	/**
+	 * Only using try/catches so that I don't have 30 lines of null checks at each level when accessing the data.
+	 */
 	private static PostData.PostType classifyPost(PostData postData) {
 		String postHint = postData.getPostHint();
-		if (postHint != null
-				&& postHint.equals("rich:video")
-				&& postData.getMedia() != null
-				&& postData.getMedia().getOembed() != null
-				&& postData.getMedia().getOembed().getThumbnailUrl() != null) {
-			return PostData.PostType.GFYCAT;
-		}
+		try {
+			if (postHint.equals("rich:video")) {
+				Oembed oembed = postData.getMedia().getOembed();
+				postData.setImageUrl(oembed.getThumbnailUrl());
+				postData.setImageWidth(oembed.getWidth());
+				postData.setImageHeight(oembed.getHeight());
+				return PostData.PostType.GIF;
+			}
+		} catch (NullPointerException e) {}
 
 		Preview preview = postData.getPreview();
-		if (postHint != null
-				&& postHint.equals("link")
-				&& preview != null
-				&& preview.getImages() != null
-				&& preview.getImages().get(0) != null
-				&& preview.getImages().get(0).getVariants() != null
-				&& preview.getImages().get(0).getVariants().getGif() != null
-				&& preview.getImages().get(0).getVariants().getGif().getSource() != null
-				&& preview.getImages().get(0).getVariants().getGif().getSource().getUrl() != null) {
-			return PostData.PostType.IMGUR_GIF;
-		}
+		try {
+			if (postHint.equals("link") || postHint.equals("image")) {
+				Source source = postData.getPreview().getImages().get(0).getVariants().getGif().getSource();
+				postData.setImageUrl(source.getUrl());
+				postData.setImageWidth(source.getWidth());
+				postData.setImageHeight(source.getHeight());
+				return PostData.PostType.GIF;
+			}
+		} catch (NullPointerException e) {}
+
 
 		if (preview != null
-				&& preview != null
 				&& preview.getImages().size() > 0
 				&& preview.getImages().get(0).getSource() != null) {
+			Source source = postData.getPreview().getImages().get(0).getSource();
+			postData.setImageUrl(source.getUrl());
+			postData.setImageWidth(source.getWidth());
+			postData.setImageHeight(source.getHeight());
 			return PostData.PostType.IMAGE;
 		}
 

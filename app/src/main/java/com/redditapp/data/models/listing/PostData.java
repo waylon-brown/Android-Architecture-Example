@@ -1,18 +1,22 @@
 package com.redditapp.data.models.listing;
 
+import android.databinding.BaseObservable;
+
 import com.squareup.moshi.Json;
 
-public class PostData {
+public class PostData extends BaseObservable {
 
 	public enum PostType {
 		TEXT,
 		IMAGE,
-		IMGUR_GIF,
-		GFYCAT,
+		GIF,
 		VIDEO
 	}
 	// Mutable
 	private PostType postType;
+	private String imageUrl;
+	private int imageWidth;
+	private int imageHeight;
 
 	// POJOs
 	private final Media media;
@@ -152,6 +156,18 @@ public class PostData {
 
 	public void setPostType(PostType postType) {
 		this.postType = postType;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public void setImageWidth(int imageWidth) {
+		this.imageWidth = imageWidth;
+	}
+
+	public void setImageHeight(int imageHeight) {
+		this.imageHeight = imageHeight;
 	}
 
 	public PostType getPostType() {
@@ -344,6 +360,18 @@ public class PostData {
 
 	public int getUps() {
 		return ups;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public int getImageWidth() {
+		return imageWidth;
+	}
+
+	public int getImageHeight() {
+		return imageHeight;
 	}
 
 	/**

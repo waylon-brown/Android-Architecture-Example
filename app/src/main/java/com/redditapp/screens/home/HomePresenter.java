@@ -2,7 +2,7 @@ package com.redditapp.screens.home;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.redditapp.api.RxApiCallers;
-import com.redditapp.base.mvp.BasePresenter;
+import com.redditapp.mvp.BasePresenter;
 import com.redditapp.data.models.listing.Listing;
 
 import javax.inject.Inject;

@@ -1,4 +1,4 @@
-package com.redditapp.base.mvp;
+package com.redditapp.mvp;
 
 import com.mikepenz.iconics.context.IconicsLayoutInflater;
 import com.redditapp.dagger.FieldInjector;

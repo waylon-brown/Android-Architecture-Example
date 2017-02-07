@@ -30,7 +30,6 @@ public interface ApplicationComponent {
     // Places to inject
     void inject(RedditApplication app);
 
-    // TODO: use subcomponents so child graphs have access to this graph
     // Exported for child-components.
     Application application();
     Context context();

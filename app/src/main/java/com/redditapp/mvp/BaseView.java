@@ -1,4 +1,4 @@
-package com.redditapp.base.mvp;
+package com.redditapp.mvp;
 
 public interface BaseView {
     void showLoading();
