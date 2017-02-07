@@ -8,7 +8,7 @@ This app demonstrates how one can incorporate MVP principles into their applicat
 * Binding the UI elements to the underlying data is done with **Android DataBinding**.
 * findViewById() boilerplate is moved over to annotations with **Butterknife**.
 * A logging helper is added with **Timber**.
-* We detect and inform the dev of any new memory leaks with **LeakCanary**.
+* New memory leaks are detected with **LeakCanary**.
 * Image loading/caching is done with **Glide**.
 * ~~Retrieval of posts are persisted to a database cache with **Realm**.~~
 
