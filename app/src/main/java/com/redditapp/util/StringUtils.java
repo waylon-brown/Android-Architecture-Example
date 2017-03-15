@@ -14,10 +14,14 @@ public final class StringUtils {
 
 	private StringUtils() {}
 
-	public static Spannable getSubredditSpannableText(Context context, PostData postData) {
-		Spannable spannable = new SpannableString("r/" + postData.getSubreddit() + " {gmd-launch} " + postData.getDomain());
+	public static Spannable getPostDescriptionSpannableText(boolean oneLine, Context context, PostData postData) {
+		String firstPart = "5 hours ago by u/" + postData.getAuthor() + " to ";
+		if (oneLine) {
+			firstPart += "\n";
+		}
+		Spannable spannable = new SpannableString(firstPart + "r/" + postData.getSubreddit() + " {gmd-launch} " + postData.getDomain());
 		spannable.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.colorPrimary)),
-				0, 2 + postData.getSubreddit().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				firstPart.length(), firstPart.length() + 2 + postData.getSubreddit().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return spannable;
 	}
 }

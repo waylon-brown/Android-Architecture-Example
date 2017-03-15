@@ -1,4 +1,4 @@
-package com.redditapp.dagger.components;
+package com.redditapp.dagger;
 
 import android.app.Application;
 import android.content.Context;

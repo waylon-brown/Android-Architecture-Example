@@ -1,4 +1,4 @@
-package com.redditapp.api;
+package com.redditapp.data.api;
 
 import com.redditapp.data.models.AccessTokenResponse;
 import com.redditapp.data.models.listing.Listing;

@@ -21,6 +21,7 @@ import com.redditapp.data.models.listing.Post;
 import com.redditapp.data.models.listing.PostData;
 import com.redditapp.databinding.PostImageBinding;
 import com.redditapp.databinding.PostTextBinding;
+import com.redditapp.util.ImageLoader;
 import com.redditapp.util.StringUtils;
 
 import butterknife.BindView;
@@ -87,11 +88,6 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
                 : listing.getData().getPosts().size();
     }
 
-    @Override
-    public void registerAdapterDataObserver(RecyclerView.AdapterDataObserver observer) {
-        super.registerAdapterDataObserver(observer);
-    }
-
     public void updateList(Listing newListing) {
         Timber.i("Updated listing.");
         Listing oldListing = Listing.copy(this.listing);
@@ -143,22 +139,20 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
 
     public class PostTextViewHolder extends BasePostViewHolder<PostTextBinding> {
 
-        @BindView(R.id.post_description) TextView postDescription;
-        @BindView(R.id.post_subreddit) TextView postSubreddit;
+        private TextView postDescription;
 
         public PostTextViewHolder(PostTextBinding postTextBinding) {
             super(postTextBinding);
-            ButterKnife.bind(this, itemView);
+            this.postDescription = postTextBinding.blah.postDescription;
         }
 
         @Override
         protected void bindData() {
-            dataBinding.setPostData(postData);
-            dataBinding.setOnPostClickListener(clickListener);
+            binding.setPostData(postData);
+            itemView.setOnClickListener(v -> clickListener.postClicked(postData));
 
-            postSubreddit.setText(StringUtils.getSubredditSpannableText(itemView.getContext(), postData));
             // TODO: get actual time ago
-            postDescription.setText("5 hours ago by u/" + postData.getAuthor() + " to");
+            postDescription.setText(StringUtils.getPostDescriptionSpannableText(false, itemView.getContext(), postData));
         }
     }
 
@@ -166,25 +160,23 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
 
         private final int IMAGE_MAX_DIMENSION_PX = 300;
 
-        @BindView(R.id.post_image) ImageView postImage;
-        @BindView(R.id.post_description) TextView postDescription;
-        @BindView(R.id.post_subreddit) TextView postSubreddit;
-        @BindView(R.id.card_view) CardView cardView;
+        private TextView postTitle;
+        private TextView postDescription;
+        private CardView cardView;
+        private ImageView postImage;
 
         public PostImageViewHolder(PostImageBinding postImageBinding) {
             super(postImageBinding);
-            ButterKnife.bind(this, itemView);
+            this.postTitle = postImageBinding.asdf;
+            ...
         }
 
         protected void bindData() {
-            dataBinding.setPostData(postData);
-            dataBinding.setOnPostClickListener(clickListener);
-
-            postSubreddit.setText(StringUtils.getSubredditSpannableText(itemView.getContext(), postData));
+            binding.setPostData(postData);
+            itemView.setOnClickListener(v -> clickListener.postClicked(postData));
             // TODO: get actual time ago
-            postDescription.setText("5 hours ago by u/" + postData.getAuthor() + " to");
-
-            setImage();
+            postDescription.setText(StringUtils.getPostDescriptionSpannableText(false, itemView.getContext(), postData));
+            getContainerWidthAndSetImage();
         }
 
         /**
@@ -192,7 +184,7 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
          * since the lazy loading of images will cause item heights to shift and the Staggered Grid Layout to
          * constantly shuffle posts.
          */
-        private void setImage() {
+        private void getContainerWidthAndSetImage() {
             if (cardViewWidth < 0) {
                 ViewTreeObserver viewTreeObserver = cardView.getViewTreeObserver();
                 viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -204,56 +196,23 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
                             cardView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         }
                         cardViewWidth = cardView.getMeasuredWidth();
-                        onCardViewWidthSet();
+                        loadImage();
                     }
                 });
             } else {
-                onCardViewWidthSet();
+                loadImage();
             }
         }
 
-        private void onCardViewWidthSet() {
-            int imageWidth = postData.getImageWidth();
-            int imageHeight = postData.getImageHeight();
-
-            // Set ImageView height
-            RelativeLayout.LayoutParams postImageLayoutParams = (RelativeLayout.LayoutParams)postImage.getLayoutParams();
-            float imageRatio = (float)imageHeight / (float)imageWidth;
-            int imageViewHeight = (int)(cardViewWidth * imageRatio);
-            postImageLayoutParams.height = imageViewHeight;
-            postImage.setLayoutParams(postImageLayoutParams);
-
-            // Downsize image to save memory
-            if (imageHeight > IMAGE_MAX_DIMENSION_PX || imageWidth > IMAGE_MAX_DIMENSION_PX) {
-                if (imageHeight > imageWidth) {
-                    imageWidth = IMAGE_MAX_DIMENSION_PX * imageWidth / imageHeight;
-                    imageHeight = IMAGE_MAX_DIMENSION_PX;
-                } else if (imageWidth > imageHeight) {
-                    imageHeight = IMAGE_MAX_DIMENSION_PX * imageHeight / imageWidth;
-                    imageWidth = IMAGE_MAX_DIMENSION_PX;
-                } else {
-                    imageWidth = IMAGE_MAX_DIMENSION_PX;
-                    imageHeight = IMAGE_MAX_DIMENSION_PX;
-                }
-            }
-
-            DrawableRequestBuilder glideBuilder = Glide.with(itemView.getContext())
-                .load(postData.getImageUrl())
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .override(imageWidth, imageHeight);
-
-            // If gif, use thumbnail from API
-            if (postData.getPostType() == PostData.PostType.GIF) {
-                DrawableRequestBuilder thumbnailBuilder = Glide.with(itemView.getContext())
-                        .load(postData.getThumbnail())
-                        .crossFade();
-                glideBuilder = glideBuilder.thumbnail(thumbnailBuilder);
-            } else {
-                // Otherwise if image, use thumbnail as down-scaled image
-                glideBuilder = glideBuilder.thumbnail(0.5f);
-            }
-            glideBuilder.into(postImage);
+        private void loadImage() {
+            new ImageLoader.Builder()
+                    .withContext(itemView.getContext())
+                    .withImageView(postImage)
+                    .withCalculatedImageWidth(cardViewWidth)
+                    .withPostData(postData)
+                    .withImageMaxDimensionPx(IMAGE_MAX_DIMENSION_PX)
+                    .build()
+                    .loadImage();
         }
     }
 }

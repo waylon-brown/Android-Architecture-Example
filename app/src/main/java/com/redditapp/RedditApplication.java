@@ -1,6 +1,6 @@
 package com.redditapp;
 
-import com.redditapp.dagger.components.ApplicationComponent;
+import com.redditapp.dagger.ApplicationComponent;
 import com.redditapp.dagger.components.DaggerApplicationComponent;
 import com.redditapp.dagger.modules.ApplicationModule;
 import com.redditapp.util.CrashlyticsTree;

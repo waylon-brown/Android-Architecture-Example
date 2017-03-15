@@ -1,4 +1,4 @@
-package com.redditapp.mvp;
+package com.redditapp.ui.base;
 
 import java.lang.ref.WeakReference;
 

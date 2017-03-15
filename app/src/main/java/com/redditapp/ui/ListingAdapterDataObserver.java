@@ -15,11 +15,11 @@ import timber.log.Timber;
  * When using item decorations with {@link android.support.v7.widget.StaggeredGridLayoutManager}, when the
  * items move the item decorations need to be updated to reflect their new margins.
  */
-public class InvalidateItemDecorDataObserver extends RecyclerView.AdapterDataObserver {
+public class ListingAdapterDataObserver extends RecyclerView.AdapterDataObserver {
 
     private final RecyclerView recyclerView;
 
-    public InvalidateItemDecorDataObserver(RecyclerView recyclerView) {
+    public ListingAdapterDataObserver(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
     }
 

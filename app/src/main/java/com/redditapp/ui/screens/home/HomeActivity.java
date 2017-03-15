@@ -1,4 +1,4 @@
-package com.redditapp.screens.home;
+package com.redditapp.ui.screens.home;
 
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
@@ -19,46 +19,60 @@ import android.view.View;
 
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
-import com.redditapp.mvp.BaseActivity;
 import com.redditapp.dagger.components.DaggerHomeComponent;
-import com.redditapp.dagger.components.HomeComponent;
 import com.redditapp.dagger.modules.ActivityModule;
 import com.redditapp.data.models.listing.Listing;
 import com.redditapp.data.models.listing.PostData;
 import com.redditapp.databinding.ActivityHomeBinding;
-import com.redditapp.ui.InvalidateItemDecorDataObserver;
+import com.redditapp.ui.ListingAdapterDataObserver;
 import com.redditapp.ui.ListingAdapter;
 import com.redditapp.ui.StaggeredGridItemDecoration;
+import com.redditapp.ui.base.BaseActivity;
 
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeoutException;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import javax.inject.Inject;
+
 import butterknife.OnClick;
 
-public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
+public class HomeActivity extends BaseActivity<HomeComponent>
         implements HomeView, NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener, ListingAdapter.OnPostClickListener {
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.drawer_layout) DrawerLayout drawer;
-    @BindView(R.id.fab) FloatingActionButton fab;
-    @BindView(R.id.nav_view) NavigationView navigationView;
-    @BindView(R.id.listing_recycler_view) RecyclerView recyclerView;
-    @BindView(R.id.listing_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-
+    // Views
     private ActivityHomeBinding binding;
+    private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private FloatingActionButton fab;
+    private NavigationView navigationView;
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    @Inject HomePresenter presenter;
+
     private ListingAdapter adapter;
     private boolean screenRotated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter.takeView(this);
 
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
+        this.toolbar = binding.appBarHome.toolbar;
+        this.drawer = binding.drawerLayout;
+        this.fab = binding.appBarHome.fab;
+        this.navigationView = binding.navView;
+        this.recyclerView = binding.appBarHome.listingRecyclerView;
+        this.swipeRefreshLayout = binding.appBarHome.listingSwipeRefreshLayout;
+
         setupViews();
         onRefresh();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.dropView(this);
+        super.onDestroy();
     }
 
     @Override
@@ -86,6 +100,8 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
 
     @Override
     protected void setupViews() {
+        setSupportActionBar(toolbar);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -111,14 +127,22 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
 			}
 			screenRotated = false;
 		});
-        adapter.registerAdapterDataObserver(new InvalidateItemDecorDataObserver(recyclerView));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                showFab(dy < 0);
+            }
+        });
+        adapter.registerAdapterDataObserver(new ListingAdapterDataObserver(recyclerView));
 
         swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
-    protected int getToolbarTitle() {
-        return R.string.home_activity_title;
+    protected String getToolbarTitle() {
+        return getString(R.string.home_activity_title);
     }
 
     /**
@@ -170,11 +194,20 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
         }
     }
 
+    @Override
+    public void showFab(boolean show) {
+        if (show && !fab.isShown()) {
+            fab.show();
+        } else if (!show && fab.isShown()) {
+            fab.hide();
+        }
+    }
+
     /**
      * From {@link com.redditapp.dagger.FieldInjector}.
      */
     @Override
-    public HomeComponent buildComponentAndInject() {
+    public void buildComponentAndInject() {
         if (component == null) {
             component = DaggerHomeComponent.builder()
                     .applicationComponent(RedditApplication.getComponent())
@@ -182,7 +215,6 @@ public class HomeActivity extends BaseActivity<HomeComponent, HomePresenter>
                     .build();
         }
         component.inject(this);
-        return component;
     }
 
     /**

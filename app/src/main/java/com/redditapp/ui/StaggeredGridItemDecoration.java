@@ -1,20 +1,19 @@
 package com.redditapp.ui;
 
-import com.redditapp.util.ViewUtils;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
+import com.redditapp.R;
+
 public class StaggeredGridItemDecoration extends RecyclerView.ItemDecoration {
 
-	private static final int MARGIN_IN_DP = 6;
 	int marginInPx;
 
 	public StaggeredGridItemDecoration(Context context) {
-		this.marginInPx = ViewUtils.dpToPx(context, MARGIN_IN_DP);
+		this.marginInPx = context.getResources().getDimensionPixelSize(R.dimen.staggered_item_margin);
 	}
 
 	@Override

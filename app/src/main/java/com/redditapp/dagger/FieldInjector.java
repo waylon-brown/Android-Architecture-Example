@@ -8,10 +8,10 @@ package com.redditapp.dagger;
  * such as activities, as we can use constructor injection for everything else.
  */
 
-public interface FieldInjector<T> {
+public interface FieldInjector {
 
     /**
-     * Must also inject itself into the component before returning.
+     * Must also inject itself into the component.
      */
-    T buildComponentAndInject();
+    void buildComponentAndInject();
 }

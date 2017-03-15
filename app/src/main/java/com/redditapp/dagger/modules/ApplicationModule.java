@@ -20,6 +20,7 @@ import dagger.Provides;
  */
 @Module
 public final class ApplicationModule {
+
     private final RedditApplication app;
 
     public ApplicationModule(RedditApplication app) {

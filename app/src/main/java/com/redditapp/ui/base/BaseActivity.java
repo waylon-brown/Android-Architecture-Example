@@ -1,4 +1,4 @@
-package com.redditapp.mvp;
+package com.redditapp.ui.base;
 
 import com.mikepenz.iconics.context.IconicsLayoutInflater;
 import com.redditapp.dagger.FieldInjector;
@@ -30,15 +30,13 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  *
  * @param <C> Dagger component containing dependencies that exist during the
  *           lifecycle of the activity
- * @param <P> Presenter for the activity
  */
-public abstract class BaseActivity<C, P extends BasePresenter> extends AppCompatActivity
-        implements BaseView, FieldInjector<C> {
+public abstract class BaseActivity<C> extends AppCompatActivity
+        implements FieldInjector {
 
     protected ObservableField<String> toolbarTitle = new ObservableField<>();
 
     protected C component;
-    @Inject protected P presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,8 +48,7 @@ public abstract class BaseActivity<C, P extends BasePresenter> extends AppCompat
         }
 
         super.onCreate(savedInstanceState);
-        component = buildComponentAndInject();
-        presenter.takeView(this);
+        buildComponentAndInject();
         bindUi();
         toolbarTitle.set(getString(getToolbarTitle()));
     }
@@ -60,7 +57,6 @@ public abstract class BaseActivity<C, P extends BasePresenter> extends AppCompat
     protected void onDestroy() {
         // Ends the ActivityScope
         component = null;
-        presenter.dropView(this);
         super.onDestroy();
     }
 
@@ -72,11 +68,8 @@ public abstract class BaseActivity<C, P extends BasePresenter> extends AppCompat
     // No-op by default
     protected void onExtractParams(@NonNull Bundle params) {
     }
-    /**
-     * Derived activity is responsible to create and store it's component.
-     */
+
     protected abstract void bindUi();
     protected abstract void setupViews();
-
-    @StringRes protected abstract int getToolbarTitle();
+    protected abstract String getToolbarTitle();
 }

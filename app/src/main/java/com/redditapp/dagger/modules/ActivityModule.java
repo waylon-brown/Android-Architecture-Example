@@ -1,9 +1,9 @@
 package com.redditapp.dagger.modules;
 
-import com.redditapp.dagger.ActivityScope;
-
 import android.app.Activity;
 import android.content.Context;
+
+import com.redditapp.dagger.ActivityScope;
 
 import javax.inject.Named;
 
@@ -17,6 +17,9 @@ import dagger.Provides;
  */
 @Module
 public class ActivityModule {
+
+    public static final String ACTIVITY_CONTEXT = "ActivityContext";
+
     private final Activity activity;
 
     public ActivityModule(Activity activity) {
@@ -31,7 +34,7 @@ public class ActivityModule {
 
     @Provides
     @ActivityScope
-    @Named("ActivityContext")
+    @Named(ACTIVITY_CONTEXT)
     Context provideContext() {
         return activity;
     }
