@@ -8,7 +8,7 @@ public abstract class BasePostViewHolder<T extends ViewDataBinding> extends Base
 
 	protected PostData postData;
 
-	public BasePostViewHolder(T binding) {
+	BasePostViewHolder(T binding) {
 		super(binding);
 	}
 

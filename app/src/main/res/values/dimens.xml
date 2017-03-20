@@ -8,4 +8,8 @@
 
     <dimen name="card_corner_radius">2dp</dimen>
     <dimen name="staggered_item_margin">6dp</dimen>
+    
+    <!-- CommentsActivity -->
+    <dimen name="comments_card_elevation">2dp</dimen>
+    <dimen name="comments_card_stacked_margin">4dp</dimen>
 </resources>

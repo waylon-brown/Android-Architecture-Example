@@ -1,13 +1,13 @@
 package com.redditapp;
 
+import android.app.Application;
+import android.os.StrictMode;
+
 import com.redditapp.dagger.ApplicationComponent;
-import com.redditapp.dagger.components.DaggerApplicationComponent;
+import com.redditapp.dagger.DaggerApplicationComponent;
 import com.redditapp.dagger.modules.ApplicationModule;
 import com.redditapp.util.CrashlyticsTree;
 import com.squareup.leakcanary.LeakCanary;
-
-import android.app.Application;
-import android.os.StrictMode;
 
 import javax.inject.Inject;
 

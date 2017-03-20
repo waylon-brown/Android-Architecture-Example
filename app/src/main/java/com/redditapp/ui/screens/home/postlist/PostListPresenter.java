@@ -1,4 +1,4 @@
-package com.redditapp.ui.screens.home;
+package com.redditapp.ui.screens.home.postlist;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.redditapp.data.api.RxApiCallers;
@@ -12,12 +12,12 @@ import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class HomePresenter extends BasePresenter<HomeView> {
+public class PostListPresenter extends BasePresenter<PostListView> {
 
 	private RxApiCallers rxApiCallers;
 
 	@Inject
-	public HomePresenter(RxApiCallers rxApiCallers) {
+    PostListPresenter(RxApiCallers rxApiCallers) {
 		this.rxApiCallers = rxApiCallers;
 	}
 

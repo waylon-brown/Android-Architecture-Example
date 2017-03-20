@@ -5,9 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DefaultObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -65,11 +64,7 @@ public class ListingAdapterDataObserver extends RecyclerView.AdapterDataObserver
                 .timer(moveMillis, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new Observer<Long>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
+                .subscribeWith(new DefaultObserver<Long>() {
                     @Override
                     public void onNext(Long value) {
                         recyclerView.invalidateItemDecorations();

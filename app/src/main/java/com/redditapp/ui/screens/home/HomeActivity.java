@@ -1,91 +1,52 @@
 package com.redditapp.ui.screens.home;
 
-import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.redditapp.BuildConfig;
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
-import com.redditapp.dagger.components.DaggerHomeComponent;
 import com.redditapp.dagger.modules.ActivityModule;
-import com.redditapp.data.models.listing.Listing;
-import com.redditapp.data.models.listing.PostData;
 import com.redditapp.databinding.ActivityHomeBinding;
-import com.redditapp.ui.ListingAdapterDataObserver;
-import com.redditapp.ui.ListingAdapter;
-import com.redditapp.ui.StaggeredGridItemDecoration;
 import com.redditapp.ui.base.BaseActivity;
 
-import java.net.UnknownHostException;
-import java.util.concurrent.TimeoutException;
-
-import javax.inject.Inject;
-
-import butterknife.OnClick;
-
 public class HomeActivity extends BaseActivity<HomeComponent>
-        implements HomeView, NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener, ListingAdapter.OnPostClickListener {
+        implements HomeView, NavigationView.OnNavigationItemSelectedListener {
 
     // Views
     private ActivityHomeBinding binding;
     private Toolbar toolbar;
-    private DrawerLayout drawer;
+    private DrawerLayout drawerLayout;
+    private NavigationView navView;
+    private ViewPager viewPager;
     private FloatingActionButton fab;
-    private NavigationView navigationView;
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
 
-    @Inject HomePresenter presenter;
-
-    private ListingAdapter adapter;
-    private boolean screenRotated = false;
+    HomePagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter.takeView(this);
-
-        this.toolbar = binding.appBarHome.toolbar;
-        this.drawer = binding.drawerLayout;
-        this.fab = binding.appBarHome.fab;
-        this.navigationView = binding.navView;
-        this.recyclerView = binding.appBarHome.listingRecyclerView;
-        this.swipeRefreshLayout = binding.appBarHome.listingSwipeRefreshLayout;
-
         setupViews();
-        onRefresh();
+
+        if (BuildConfig.FLAVOR.equals("offline")) {
+            Snackbar.make(binding.getRoot(), R.string.snackbar_offline_mode, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
-    public void onDestroy() {
-        presenter.dropView(this);
+    protected void onDestroy() {
+        pagerAdapter = null;
         super.onDestroy();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        screenRotated = true;
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @OnClick(R.id.fab)
-    public void fabClicked(View view) {
-        Snackbar.make(fab, "Fab clicked", Snackbar.LENGTH_LONG)
-                .setDuration(Snackbar.LENGTH_LONG)
-                .show();
     }
 
     /**
@@ -95,7 +56,12 @@ public class HomeActivity extends BaseActivity<HomeComponent>
     @Override
     protected void bindUi() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
-        binding.appBarHome.setToolbarTitle(toolbarTitle);
+        binding.setToolbarTitle(toolbarTitle);
+        this.toolbar = binding.toolbar;
+        this.drawerLayout = binding.drawerLayout;
+        this.navView = binding.navView;
+        this.viewPager = binding.viewPager;
+        this.fab = binding.fab;
     }
 
     @Override
@@ -103,41 +69,30 @@ public class HomeActivity extends BaseActivity<HomeComponent>
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView.setNavigationItemSelectedListener(this);
-
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        adapter = new ListingAdapter(this);
-        recyclerView.addItemDecoration(new StaggeredGridItemDecoration(this));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            /**
-             * If the screen just rotated, we want to recalculate list item heights and item decorations.
-             *
-             * More on this at {@link ListingAdapter.com.redditapp.ui.ListingAdapter.PostImageViewHolder#setImage}
-              */
-			if (screenRotated) {
-				adapter.invalidateCardHeight();
-                recyclerView.invalidateItemDecorations();
-			}
-			screenRotated = false;
-		});
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        navView.setNavigationItemSelectedListener(this);
+        
+        // TODO: get pageradapter from dagger?
+        pagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                showFab(position == 0);
+            }
+            
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                showFab(dy < 0);
+            public void onPageScrollStateChanged(int state) {
             }
         });
-        adapter.registerAdapterDataObserver(new ListingAdapterDataObserver(recyclerView));
-
-        swipeRefreshLayout.setOnRefreshListener(this);
+        getSupportFragmentManager();
     }
 
     @Override
@@ -146,54 +101,9 @@ public class HomeActivity extends BaseActivity<HomeComponent>
     }
 
     /**
-     * From {@link android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener}.
+     * From {@link HomeView}
      */
-    @Override
-    public void onRefresh() {
-        presenter.loadListing();
-    }
-
-    /**
-     * From {@link ListingAdapter.OnPostClickListener}.
-     */
-    @Override
-    public void postClicked(PostData postData) {
-    }
-
-    /**
-     * HomeView and BaseView implementations
-     */
-
-    @Override
-    public void showContent(Listing listing) {
-        adapter.updateList(listing);
-        swipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void showLoading() {
-        swipeRefreshLayout.setRefreshing(true);
-    }
-
-    @Override
-    public void showError(Throwable throwable) {
-        swipeRefreshLayout.setRefreshing(false);
-
-        if (throwable instanceof UnknownHostException) {
-            Snackbar.make(fab, getString(R.string.error_feed_no_internet), Snackbar.LENGTH_LONG)
-                    .setDuration(Snackbar.LENGTH_LONG)
-                    .show();
-        } else if (throwable instanceof TimeoutException) {
-            Snackbar.make(fab, getString(R.string.error_feed_timeout), Snackbar.LENGTH_LONG)
-                    .setDuration(Snackbar.LENGTH_LONG)
-                    .show();
-        } else {
-            Snackbar.make(fab, getString(R.string.error_feed_generic), Snackbar.LENGTH_LONG)
-                    .setDuration(Snackbar.LENGTH_LONG)
-                    .show();
-        }
-    }
-
+    
     @Override
     public void showFab(boolean show) {
         if (show && !fab.isShown()) {
@@ -201,6 +111,16 @@ public class HomeActivity extends BaseActivity<HomeComponent>
         } else if (!show && fab.isShown()) {
             fab.hide();
         }
+    }
+
+    @Override
+    public void showLoading() {
+        // TODO
+    }
+
+    @Override
+    public void showError(Throwable throwable) {
+        // TODO
     }
 
     /**
@@ -223,8 +143,8 @@ public class HomeActivity extends BaseActivity<HomeComponent>
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -272,7 +192,7 @@ public class HomeActivity extends BaseActivity<HomeComponent>
 
         }
 
-        drawer.closeDrawer(GravityCompat.START);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 }

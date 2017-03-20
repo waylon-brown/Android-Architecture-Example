@@ -1,7 +1,5 @@
 package com.redditapp.data.api;
 
-import android.content.Context;
-
 import com.redditapp.BuildConfig;
 import com.redditapp.dagger.modules.ActivityModule;
 import com.redditapp.dagger.modules.BasicAuthNetworkModule;
@@ -11,6 +9,8 @@ import com.redditapp.data.models.AccessTokenResponse;
 import com.redditapp.data.models.listing.Listing;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+
+import android.content.Context;
 
 import java.io.IOException;
 import java.io.InputStream;

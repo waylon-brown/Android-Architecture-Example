@@ -20,7 +20,7 @@ public final class ViewUtils {
         }
     }
 
-    public static int dpToPx(@NonNull Context context, int dp) {
+    public static int dpToPx(@NonNull Context context, float dp) {
         Resources r = context.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }

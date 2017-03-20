@@ -5,9 +5,14 @@
     <string name="action_settings">Settings</string>
 
     <string name="home_activity_title">Reddit</string>
+    
+    <string name="snackbar_offline_mode">Offline mode enabled.</string>
 
     <!-- Errors -->
     <string name="error_feed_no_internet">Couldn\'t load any posts, either you aren\'t connected to the internet or Reddit is down at the moment.</string>
     <string name="error_feed_timeout">Loading the feed took too long, either Reddit is down or your internet is too slow at the moment. Please try again.</string>
     <string name="error_feed_generic">Oops, we ran into a problem, please try again in a bit.</string>
+
+    <!-- Shared elements -->
+    <string name="shared_element_post_title">shared_element_post_title</string>
 </resources>

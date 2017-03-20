@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data class="CommentBinding">
+        <variable name="comment" type="com.redditapp.data.models.FakeComment"/>
+    </data>
+    
+    <FrameLayout
+        android:id="@+id/comment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <android.support.constraint.ConstraintLayout 
+            android:id="@+id/comment_data_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+    
+            <TextView
+                android:id="@+id/comment_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="u/ThisUser 72 days ago | 14000 points"
+                android:textSize="12sp"
+                android:layout_margin="4dp"
+                android:textColor="@color/black"/>
+    
+            <TextView
+                android:id="@+id/comment_text"
+                android:text="@{comment.getCommentText()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/black"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/comment_title_text"
+                tools:text="This is a comment this is a comment this is a comment this is a comment this is a comment this is a comment." />
+            
+        </android.support.constraint.ConstraintLayout>
+    
+    </FrameLayout>
+    
+</layout>

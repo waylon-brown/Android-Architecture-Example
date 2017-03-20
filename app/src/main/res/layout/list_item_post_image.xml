@@ -5,7 +5,6 @@
 
     <data class="PostImageBinding">
         <variable name="postData" type="com.redditapp.data.models.listing.PostData"/>
-        <variable name="onPostClickListener" type="com.redditapp.ui.ListingAdapter.OnPostClickListener"/>
     </data>
 
     <android.support.v7.widget.CardView
@@ -15,7 +14,6 @@
         app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="false"
-        android:onClick="@{() -> onPostClickListener.postClicked(postData)}"
         tools:layout_width="180dp" >
 
         <RelativeLayout
@@ -25,14 +23,15 @@
             <ImageView
                 android:id="@+id/post_image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 tools:src="@drawable/sample_post_image"
                 tools:layout_height="120dp"/>
 
-            <include layout="@layout/list_item_post_common_details"
-                     app:postData="@{postData}"
-                     app:onPostClickListener="@{onPostClickListener}"/>
+            <include 
+                android:id="@+id/post_details"
+                layout="@layout/list_item_post_common_details"
+                app:postData="@{postData}"/>
 
         </RelativeLayout>
 

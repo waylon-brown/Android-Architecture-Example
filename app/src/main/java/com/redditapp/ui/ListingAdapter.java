@@ -2,19 +2,17 @@ package com.redditapp.ui;
 
 import android.databinding.DataBindingUtil;
 import android.os.Build;
+import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.DrawableRequestBuilder;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.redditapp.R;
 import com.redditapp.data.models.listing.Listing;
 import com.redditapp.data.models.listing.Post;
@@ -24,18 +22,20 @@ import com.redditapp.databinding.PostTextBinding;
 import com.redditapp.util.ImageLoader;
 import com.redditapp.util.StringUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.ArrayList;
+import java.util.List;
+
 import timber.log.Timber;
 
-public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
+public class ListingAdapter extends RecyclerView.Adapter {
 
     private Listing listing;
     private OnPostClickListener clickListener;
     private int cardViewWidth = -1;
 
     public interface OnPostClickListener {
-        void postClicked(PostData postData);
+        // Shared elements would be much better suited in a HashMap, but ActivityOptionsCompat expects this...
+        void postClicked(PostData postData, List<Pair<View, String>> sharedElements);
     }
 
     enum ItemType {
@@ -61,6 +61,7 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Post post = listing.getData().getPosts().get(position);
+        ((BasePostViewHolder)holder).setPost(post.getData());
         if (holder instanceof PostImageViewHolder) {
             PostImageViewHolder postImageViewHolder = (PostImageViewHolder)holder;
             postImageViewHolder.setPost(post.getData());
@@ -130,7 +131,7 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
     }
 
     /**
-     * Recalculate image post heights in {@link PostImageViewHolder#setImage()}.
+     * Recalculate image post heights in {@link PostImageViewHolder#getContainerWidthAndSetImage()}.
      */
     public void invalidateCardHeight() {
         cardViewWidth = -1;
@@ -139,20 +140,18 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
 
     public class PostTextViewHolder extends BasePostViewHolder<PostTextBinding> {
 
-        private TextView postDescription;
 
         public PostTextViewHolder(PostTextBinding postTextBinding) {
             super(postTextBinding);
-            this.postDescription = postTextBinding.blah.postDescription;
         }
 
         @Override
         protected void bindData() {
             binding.setPostData(postData);
-            itemView.setOnClickListener(v -> clickListener.postClicked(postData));
+            itemView.setOnClickListener(v -> clickListener.postClicked(postData, null));
 
             // TODO: get actual time ago
-            postDescription.setText(StringUtils.getPostDescriptionSpannableText(false, itemView.getContext(), postData));
+            binding.postDetails.postDescription.setText(StringUtils.getPostDescriptionSpannableText(false, itemView.getContext(), postData));
         }
     }
 
@@ -161,19 +160,21 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
         private final int IMAGE_MAX_DIMENSION_PX = 300;
 
         private TextView postTitle;
-        private TextView postDescription;
-        private CardView cardView;
-        private ImageView postImage;
+        public TextView postDescription;
+        public CardView cardView;
+        public ImageView postImage;
 
         public PostImageViewHolder(PostImageBinding postImageBinding) {
             super(postImageBinding);
-            this.postTitle = postImageBinding.asdf;
-            ...
+            this.postTitle = postImageBinding.postDetails.postTitle;
+            this.postDescription = postImageBinding.postDetails.postDescription;
+            this.cardView = postImageBinding.cardView;
+            this.postImage = postImageBinding.postImage;
         }
 
         protected void bindData() {
             binding.setPostData(postData);
-            itemView.setOnClickListener(v -> clickListener.postClicked(postData));
+            itemView.setOnClickListener(v -> clickListener.postClicked(postData, getSharedElements()));
             // TODO: get actual time ago
             postDescription.setText(StringUtils.getPostDescriptionSpannableText(false, itemView.getContext(), postData));
             getContainerWidthAndSetImage();
@@ -213,6 +214,12 @@ public class ListingAdapter extends RecyclerView.Adapter implements Cloneable {
                     .withImageMaxDimensionPx(IMAGE_MAX_DIMENSION_PX)
                     .build()
                     .loadImage();
+        }
+
+        private List<Pair<View, String>> getSharedElements() {
+            List<Pair<View, String>> pairList = new ArrayList<>();
+            pairList.add(Pair.create(postTitle, itemView.getContext().getString(R.string.shared_element_post_title)));
+            return pairList;
         }
     }
 }

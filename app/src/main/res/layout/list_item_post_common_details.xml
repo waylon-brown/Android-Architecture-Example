@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable name="postData" type="com.redditapp.data.models.listing.PostData"/>
-        <variable name="onPostClickListener" type="com.redditapp.ui.ListingAdapter.OnPostClickListener"/>
     </data>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,65 +19,61 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
+            android:transitionName="@string/shared_element_post_title"
             tools:text="This is a title of a post that is a title to a post that\'s a title."
             android:text="@{postData.title}"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            tools:layout_constraintTop_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/post_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_text"
-            android:lines="1"
             android:ellipsize="end"
-            tools:text="X hours ago by u/example_user to"
-            android:textSize="10sp"
-            android:layout_marginTop="4dp"/>
+            android:textSize="11sp"
+            android:layout_marginTop="4dp"
+            tools:text="5 hours ago by u/example_user to\nr/funny imgur.com"
+            tools:layout_constraintTop_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            app:layout_constraintTop_toBottomOf="@+id/post_title"
+            app:layout_constraintLeft_toLeftOf="@+id/post_title"/>
 
         <TextView
-            android:id="@+id/post_subreddit"
+            android:id="@+id/post_comments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text='@{postData.numComments + " comments"}'
             android:textColor="@color/secondary_text"
-            android:lines="1"
-            android:ellipsize="end"
-            tools:text="r/what_sub at domain.com"
-            android:textSize="10sp"
-            android:layout_marginTop="0dp"/>
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"
+            tools:text="2000 comments"
+            tools:layout_constraintTop_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            app:layout_constraintTop_toBottomOf="@+id/post_description"
+            app:layout_constraintLeft_toLeftOf="parent"
+            fontPath="fonts/Roboto-Regular.ttf" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/post_score"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp">
+            android:text='@{postData.score + " pts"}'
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp"
+            tools:text="14000pts"
+            tools:layout_conversion_absoluteX="323dp"
+            tools:layout_conversion_absoluteY="71dp"
+            tools:layout_conversion_absoluteWidth="49dp"
+            tools:layout_conversion_absoluteHeight="14dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/post_comments"
+            fontPath="fonts/Roboto-Regular.ttf"/>
 
-            <TextView
-                android:id="@+id/post_comments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="2000 comments"
-                android:text='@{postData.numComments + " comments"}'
-                android:textColor="@color/secondary_text"
-                android:textSize="11sp"/>
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true">
-
-                <TextView
-                    android:id="@+id/post_points"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="14000pts"
-                    android:text='@{postData.score + " pts"}'
-                    android:textColor="@color/secondary_text"
-                    android:textSize="11sp"/>
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </layout>

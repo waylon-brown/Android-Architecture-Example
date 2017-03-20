@@ -9,8 +9,9 @@
     <color name="header_text">#777777</color>
 
     <color name="black">#000</color>
+    <color name="white">#FFF</color>
 
-    <color name="listBackground">@color/grey_300</color>
+    <color name="main_background">@color/grey_300</color>
 
     <!-- https://www.materialui.co/colors -->
 

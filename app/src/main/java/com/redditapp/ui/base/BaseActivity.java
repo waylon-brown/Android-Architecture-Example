@@ -8,11 +8,8 @@ import android.databinding.ObservableField;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.app.AppCompatActivity;
-
-import javax.inject.Inject;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -50,7 +47,7 @@ public abstract class BaseActivity<C> extends AppCompatActivity
         super.onCreate(savedInstanceState);
         buildComponentAndInject();
         bindUi();
-        toolbarTitle.set(getString(getToolbarTitle()));
+        toolbarTitle.set(getToolbarTitle());
     }
 
     @Override
@@ -69,6 +66,7 @@ public abstract class BaseActivity<C> extends AppCompatActivity
     protected void onExtractParams(@NonNull Bundle params) {
     }
 
+    
     protected abstract void bindUi();
     protected abstract void setupViews();
     protected abstract String getToolbarTitle();
