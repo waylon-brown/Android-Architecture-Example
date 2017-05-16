@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jellyknife.Bind;
+import com.jellyknife.DataBinding;
+import com.jellyknife.JellyKnife;
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
 import com.redditapp.dagger.modules.ActivityModule;
@@ -39,9 +42,9 @@ public class PostListFragment extends BaseFragment<HomeComponent>
         implements PostListView, SwipeRefreshLayout.OnRefreshListener, ListingAdapter.OnPostClickListener {
 
     // Views
-    private PostListFragmentBinding binding;
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    @DataBinding public PostListFragmentBinding binding;
+    @Bind public RecyclerView recyclerView;
+    @Bind public SwipeRefreshLayout swipeRefreshLayout;
     
     @Inject PostListPresenter presenter;
     @Inject HomeView homeView;
@@ -54,8 +57,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Don't attach to parent, done for us by the PagerAdapter
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_postlist, container, false);
-        this.recyclerView = binding.recyclerView;
-        this.swipeRefreshLayout = binding.swipeRefreshLayout;
+        JellyKnife.bind(this);
         return binding.getRoot();
     }
 

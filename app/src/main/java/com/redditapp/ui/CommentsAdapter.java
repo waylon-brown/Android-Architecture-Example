@@ -1,5 +1,17 @@
 package com.redditapp.ui;
 
+import com.jellyknife.Bind;
+import com.jellyknife.JellyKnife;
+import com.redditapp.BuildConfig;
+import com.redditapp.R;
+import com.redditapp.data.models.FakeComment;
+import com.redditapp.data.models.listing.PostData;
+import com.redditapp.databinding.CommentBinding;
+import com.redditapp.databinding.CommentsPostBinding;
+import com.redditapp.util.CommentCardViewManager;
+import com.redditapp.util.ImageLoader;
+import com.redditapp.util.StringUtils;
+
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
@@ -12,16 +24,6 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.redditapp.BuildConfig;
-import com.redditapp.R;
-import com.redditapp.data.models.FakeComment;
-import com.redditapp.data.models.listing.PostData;
-import com.redditapp.databinding.CommentBinding;
-import com.redditapp.databinding.CommentsPostBinding;
-import com.redditapp.util.CommentCardViewManager;
-import com.redditapp.util.ImageLoader;
-import com.redditapp.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,9 +85,10 @@ public class CommentsAdapter extends RecyclerView.Adapter {
         private final int IMAGE_MAX_DIMENSION_PX = 1200;
 
         // Views
-        private TextView postDescription;
-		private CardView cardView;
-		private ImageView postImage;
+        @Bind
+        public TextView postDescription;
+        @Bind public CardView cardView;
+        @Bind public ImageView postImage;
         
         private Context context;
 		
@@ -96,10 +99,8 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
 		public HeaderViewHolder(CommentsPostBinding binding) {
 			super(binding);
+            JellyKnife.bind(this, binding);
 			this.context = itemView.getContext();
-			this.postDescription = binding.postDescription;
-			this.cardView = binding.cardView;
-			this.postImage = binding.postImage;
 		}
 
 		@Override
@@ -141,9 +142,9 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 	public static class CommentsViewHolder extends BaseBindingViewHolder<CommentBinding> {
 
         // Views
-        private TextView commentTitleText;
-        private FrameLayout commentLayout;
-		private ConstraintLayout commentDataContainer;
+        @Bind public TextView commentTitleText;
+        @Bind public FrameLayout commentLayout;
+        @Bind public ConstraintLayout commentDataContainer;
         
 		private Context context;
         private List<FakeComment> commentList;
@@ -157,11 +158,9 @@ public class CommentsAdapter extends RecyclerView.Adapter {
 
 		public CommentsViewHolder(CommentBinding binding, List<FakeComment> commentList) {
 			super(binding);
+            JellyKnife.bind(this, binding);
 			this.context = itemView.getContext();
             this.commentList = commentList;
-			this.commentTitleText = binding.commentTitleText;
-			this.commentLayout = binding.commentLayout;
-			this.commentDataContainer = binding.commentDataContainer;
         }
 
 		/**

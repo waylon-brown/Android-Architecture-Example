@@ -1,1 +1,5 @@
-include ':app'
+include ':app', ':jellyknife'
+
+// Download this library to the same directory that this project is in
+// https://github.com/WaylonBrown/JellyKnife
+project(':jellyknife').projectDir = new File(settingsDir, '../jellyknife')

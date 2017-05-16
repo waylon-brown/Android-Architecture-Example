@@ -1,5 +1,18 @@
 package com.redditapp.ui.screens.comments;
 
+import com.jellyknife.Bind;
+import com.jellyknife.DataBinding;
+import com.jellyknife.JellyKnife;
+import com.redditapp.R;
+import com.redditapp.RedditApplication;
+import com.redditapp.dagger.modules.ActivityModule;
+import com.redditapp.data.models.listing.PostData;
+import com.redditapp.databinding.CommentsActivityBinding;
+import com.redditapp.ui.CommentsAdapter;
+import com.redditapp.ui.base.BaseActivity;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -12,16 +25,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.redditapp.R;
-import com.redditapp.RedditApplication;
-import com.redditapp.dagger.modules.ActivityModule;
-import com.redditapp.data.models.listing.PostData;
-import com.redditapp.databinding.CommentsActivityBinding;
-import com.redditapp.ui.CommentsAdapter;
-import com.redditapp.ui.base.BaseActivity;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,9 +44,9 @@ public class CommentsActivity extends BaseActivity<CommentsComponent>
 	CommentsPresenter presenter;
 
     // Views
-    private CommentsActivityBinding binding;
-    private Toolbar toolbar;
-    private RecyclerView recyclerView;
+    @DataBinding public CommentsActivityBinding binding;
+    @Bind public Toolbar toolbar;
+    @Bind public RecyclerView recyclerView;
     
 	private CommentsAdapter adapter;
     private PostData postData;
@@ -88,9 +91,8 @@ public class CommentsActivity extends BaseActivity<CommentsComponent>
 	@Override
 	protected void bindUi() {
 		binding = DataBindingUtil.setContentView(this, R.layout.activity_comments);
+        JellyKnife.bind(this);
         binding.setToolbarTitle(toolbarTitle);
-		this.toolbar = binding.toolbar;
-		this.recyclerView = binding.recyclerView;
 	}
 
 	@Override

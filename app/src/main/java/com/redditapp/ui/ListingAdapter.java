@@ -13,6 +13,8 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jellyknife.Bind;
+import com.jellyknife.JellyKnife;
 import com.redditapp.R;
 import com.redditapp.data.models.listing.Listing;
 import com.redditapp.data.models.listing.Post;
@@ -140,9 +142,11 @@ public class ListingAdapter extends RecyclerView.Adapter {
 
     public class PostTextViewHolder extends BasePostViewHolder<PostTextBinding> {
 
-
+        @Bind public TextView postDescription;
+        
         public PostTextViewHolder(PostTextBinding postTextBinding) {
             super(postTextBinding);
+            JellyKnife.bind(this, postTextBinding);
         }
 
         @Override
@@ -151,7 +155,7 @@ public class ListingAdapter extends RecyclerView.Adapter {
             itemView.setOnClickListener(v -> clickListener.postClicked(postData, null));
 
             // TODO: get actual time ago
-            binding.postDetails.postDescription.setText(StringUtils.getPostDescriptionSpannableText(false, itemView.getContext(), postData));
+            postDescription.setText(StringUtils.getPostDescriptionSpannableText(false, itemView.getContext(), postData));
         }
     }
 
@@ -159,17 +163,14 @@ public class ListingAdapter extends RecyclerView.Adapter {
 
         private final int IMAGE_MAX_DIMENSION_PX = 300;
 
-        private TextView postTitle;
-        public TextView postDescription;
-        public CardView cardView;
-        public ImageView postImage;
+        @Bind public TextView postTitle;
+        @Bind public TextView postDescription;
+        @Bind public CardView cardView;
+        @Bind public ImageView postImage;
 
         public PostImageViewHolder(PostImageBinding postImageBinding) {
             super(postImageBinding);
-            this.postTitle = postImageBinding.postDetails.postTitle;
-            this.postDescription = postImageBinding.postDetails.postDescription;
-            this.cardView = postImageBinding.cardView;
-            this.postImage = postImageBinding.postImage;
+            JellyKnife.bind(this, postImageBinding);
         }
 
         protected void bindData() {

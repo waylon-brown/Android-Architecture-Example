@@ -13,6 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.jellyknife.Bind;
+import com.jellyknife.DataBinding;
+import com.jellyknife.JellyKnife;
 import com.redditapp.BuildConfig;
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
@@ -24,12 +27,12 @@ public class HomeActivity extends BaseActivity<HomeComponent>
         implements HomeView, NavigationView.OnNavigationItemSelectedListener {
 
     // Views
-    private ActivityHomeBinding binding;
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
-    private NavigationView navView;
-    private ViewPager viewPager;
-    private FloatingActionButton fab;
+    @DataBinding public ActivityHomeBinding binding;
+    @Bind public Toolbar toolbar;
+    @Bind public DrawerLayout drawerLayout;
+    @Bind public NavigationView navView;
+    @Bind public ViewPager viewPager;
+    @Bind public FloatingActionButton fab;
 
     HomePagerAdapter pagerAdapter;
 
@@ -56,12 +59,8 @@ public class HomeActivity extends BaseActivity<HomeComponent>
     @Override
     protected void bindUi() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
+        JellyKnife.bind(this);
         binding.setToolbarTitle(toolbarTitle);
-        this.toolbar = binding.toolbar;
-        this.drawerLayout = binding.drawerLayout;
-        this.navView = binding.navView;
-        this.viewPager = binding.viewPager;
-        this.fab = binding.fab;
     }
 
     @Override
