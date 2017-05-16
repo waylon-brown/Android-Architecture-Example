@@ -14,6 +14,7 @@ import dagger.Component;
         modules = {ActivityModule.class, HomeModule.class})
 public interface HomeComponent {
     void inject(HomeActivity homeActivity);
+    
     // Any fragments that this activity may use
     void inject(PostListFragment fragment);
     void inject(AccountFragment fragment);

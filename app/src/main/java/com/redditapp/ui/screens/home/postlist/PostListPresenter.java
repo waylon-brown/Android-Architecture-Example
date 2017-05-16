@@ -23,8 +23,7 @@ public class PostListPresenter extends BasePresenter<PostListView> {
 
 	protected void loadListing() {
 		getView().showLoading();
-
-		// First get access token, then get main feed
+		
 		DisposableSingleObserver observer = rxApiCallers
 				.getListing()
 				.subscribeOn(Schedulers.io())

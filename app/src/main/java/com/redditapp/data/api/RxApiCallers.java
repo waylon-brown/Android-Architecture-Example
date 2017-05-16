@@ -52,6 +52,7 @@ public class RxApiCallers {
         if (BuildConfig.FLAVOR.equals("offline")) {
             return getOfflineListingFromJson();
         }
+        // First get access token, then get listing
         return getUserAccessTokenObservable()
                 .flatMap(response -> getRedditFrontPageObservable(response.getAccessToken()))
                 .timeout(API_CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)

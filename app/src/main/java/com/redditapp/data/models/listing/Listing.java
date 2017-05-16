@@ -34,7 +34,7 @@ public class Listing {
      */
 	public static void classifyPosts(Listing listing) {
 		if (listing.getData().getPosts() != null) {
-			for(Post post : listing.getData().getPosts()) {
+			for (Post post : listing.getData().getPosts()) {
 				post.getData().setPostType(classifyPost(post.getData()));
 			}
 		}

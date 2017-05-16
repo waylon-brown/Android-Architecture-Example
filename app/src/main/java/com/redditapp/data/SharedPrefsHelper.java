@@ -16,7 +16,7 @@ import timber.log.Timber;
 
 public class SharedPrefsHelper {
 
-	private final int REFRESH_THRESHHOLD_SECONDS = 60;
+	private final int TOKEN_EXPIRATION_THRESHHOLD_SECONDS = 60;
 	private final String SHARED_PREFS_FILE_KEY = "shared_prefs_file_reddit";
 	private final String KEY_ACCESS_TOKEN = "access_token";
 
@@ -34,11 +34,11 @@ public class SharedPrefsHelper {
 		Calendar calendar = Calendar.getInstance();
 		long now = calendar.getTimeInMillis();
 		/**
-		 * We make the "expires in" time to be {@link #REFRESH_THRESHHOLD_SECONDS} less than what it actually is
-		 * to defensively make up for any lost time between the server registering this access token and
+		 * We make the "expires in" time to be {@link #t TOKEN_EXPIRATION_THRESHHOLD_SECONDS} less than what it actually
+		 * is to defensively make up for any lost time between the server registering this access token and
 		 * this call being made.
 		 */
-		long expiresInMillis = (accessTokenResponse.getExpiresIn() - REFRESH_THRESHHOLD_SECONDS) * 1000;
+		long expiresInMillis = (accessTokenResponse.getExpiresIn() - TOKEN_EXPIRATION_THRESHHOLD_SECONDS) * 1000;
 		// TODO: add to debug drawer
 //		accessTokenResponse.setExpiresAt(now + 10 * 1000);
 		accessTokenResponse.setExpiresAt(now + expiresInMillis);

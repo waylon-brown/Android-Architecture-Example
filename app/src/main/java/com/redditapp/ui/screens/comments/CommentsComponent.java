@@ -10,6 +10,7 @@ import dagger.Component;
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface CommentsComponent {
 	void inject(CommentsActivity commentsActivity);
+	
 	// Add any fragments that this activity may use
 	//void inject(HomeFragment homeFragment);
 }
