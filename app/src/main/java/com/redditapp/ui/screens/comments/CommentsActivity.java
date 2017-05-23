@@ -38,7 +38,7 @@ public class CommentsActivity extends BaseActivity<CommentsComponent>
 	@Inject
 	Moshi moshi;
 	@Inject
-	CommentsPresenter presenter;
+	CommentsViewModel presenter;
 
     // Views
     private CommentsActivityBinding binding;

@@ -1,5 +1,6 @@
 package com.redditapp.ui.screens.home.postlist;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
+import timber.log.Timber;
+
 
 public class PostListFragment extends BaseFragment<HomeComponent> 
         implements PostListView, SwipeRefreshLayout.OnRefreshListener, ListingAdapter.OnPostClickListener {
@@ -43,12 +46,24 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     
-    @Inject PostListPresenter presenter;
+    PostListViewModel viewModel;
+
     @Inject HomeView homeView;
 
     private ListingAdapter adapter;
     private boolean screenRotated = false;
-    
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // Creates ViewModel or uses existing one. Automatically manages scoping of its lifetime.
+        viewModel = ViewModelProviders.of(this).get(PostListViewModel.class).init();
+        viewModel.getListing().observe(this, listing -> {
+            // update UI
+            Timber.d("Update UI please!");
+        });
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,20 +78,12 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupViews();
-        onRefresh();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         buildComponentAndInject();
-        presenter.takeView(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        presenter.dropView(this);
-        super.onDestroy();
     }
 
     public void buildComponentAndInject() {
@@ -132,7 +139,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
      */
     @Override
     public void onRefresh() {
-        presenter.loadListing();
+        viewModel.loadNewListing();
     }
 
     /**

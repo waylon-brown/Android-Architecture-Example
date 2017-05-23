@@ -1,10 +1,13 @@
 package com.redditapp.ui.base;
 
+import android.arch.lifecycle.ViewModel;
+
 import java.lang.ref.WeakReference;
 
 import io.reactivex.disposables.CompositeDisposable;
 
-public class BasePresenter<V extends BaseView> {
+// TODO: remove
+public class BaseViewModel<V extends BaseView> extends ViewModel {
 
     private WeakReference<V> view = null;
     protected final CompositeDisposable disposables = new CompositeDisposable();

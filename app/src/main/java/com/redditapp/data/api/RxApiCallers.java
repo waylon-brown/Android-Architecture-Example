@@ -1,5 +1,10 @@
 package com.redditapp.data.api;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
+
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.redditapp.BuildConfig;
 import com.redditapp.dagger.modules.ActivityModule;
 import com.redditapp.dagger.modules.BasicAuthNetworkModule;
@@ -10,8 +15,6 @@ import com.redditapp.data.models.listing.Listing;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
-import android.content.Context;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -21,8 +24,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
+import timber.log.Timber;
 
 public class RxApiCallers {
 
@@ -47,17 +53,40 @@ public class RxApiCallers {
         this.moshi = moshi;
     }
 
-    public Single<Listing> getListing() {
+    public LiveData<Listing> getListing() {
         // Instead uses local JSON file
         if (BuildConfig.FLAVOR.equals("offline")) {
             return getOfflineListingFromJson();
         }
         // First get access token, then get listing
-        return getUserAccessTokenObservable()
+        final MutableLiveData<Listing> liveData = new MutableLiveData<>();
+        //TODO: Because we're using Rx, we still need to manage lifecycle
+        getUserAccessTokenObservable()
                 .flatMap(response -> getRedditFrontPageObservable(response.getAccessToken()))
                 .timeout(API_CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .doOnSuccess(listing -> Listing.classifyPosts(listing))
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Listing>() {
+                    @Override
+                    public void onSuccess(Listing listing) {
+                        liveData.setValue(listing);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                        if (e instanceof HttpException) {
+                            HttpException exception = (HttpException)e;
+                            if (exception.code() == 403) {
+                                // Shouldn't happen
+                                Timber.wtf("403 - Access code was out of date.");
+                            }
+                        }
+                        liveData.setValue(null);
+                    }
+                });
+        return liveData;
     }
 
     /**
@@ -79,12 +108,15 @@ public class RxApiCallers {
                 .getFrontPageListing("bearer " + accessToken);
     }
 
-    private Single<Listing> getOfflineListingFromJson() {
+    private LiveData<Listing> getOfflineListingFromJson() {
         String jsonString = loadJSONFromAsset();
         JsonAdapter<Listing> adapter = moshi.adapter(Listing.class);
         try {
             Listing listing = adapter.fromJson(jsonString);
-            return Single.just(listing);
+            MutableLiveData liveData = new MutableLiveData<Listing>();
+            liveData.setValue(listing);
+            return liveData;
+//            return Single.just(listing);
         } catch (IOException e) {
             e.printStackTrace();
         }

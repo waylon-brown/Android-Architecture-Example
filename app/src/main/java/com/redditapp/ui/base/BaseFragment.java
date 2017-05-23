@@ -1,12 +1,12 @@
 package com.redditapp.ui.base;
 
-import com.redditapp.dagger.FieldInjector;
-
+import android.arch.lifecycle.LifecycleFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
-public abstract class BaseFragment<C> extends Fragment 
+import com.redditapp.dagger.FieldInjector;
+
+public abstract class BaseFragment<C> extends LifecycleFragment
         implements BaseView, FieldInjector {
     
     protected C component;
