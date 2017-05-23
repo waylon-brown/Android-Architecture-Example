@@ -8,6 +8,9 @@ import com.redditapp.data.models.listing.Listing;
 
 import javax.inject.Inject;
 
+/**
+ * It is important that the ViewModel must not know about the View.
+ */
 public class PostListViewModel extends ViewModel {
 
 	private RxApiCallers rxApiCallers;
@@ -20,20 +23,20 @@ public class PostListViewModel extends ViewModel {
 	}
 
 	// Makes sure LiveData is set
-	public PostListViewModel init() {
+	public void init() {
 		// TODO: add loading into activity
 //		getView().showLoading();
 
 		// This is important since the ViewModel is created per Fragment
 		if (this.listing != null) {
-			return this;
+			return;
 		}
-		loadNewListing();
-		return this;
+		listing = rxApiCallers.getListing();
 	}
 
 	public void loadNewListing() {
-		listing = rxApiCallers.getListing();
+		// TODO: see if this works without setting new listing
+		rxApiCallers.getListing();
 	}
 
 	public LiveData<Listing> getListing() {

@@ -57,7 +57,8 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Creates ViewModel or uses existing one. Automatically manages scoping of its lifetime.
-        viewModel = ViewModelProviders.of(this).get(PostListViewModel.class).init();
+        viewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
+        viewModel.init();
         viewModel.getListing().observe(this, listing -> {
             // update UI
             Timber.d("Update UI please!");
