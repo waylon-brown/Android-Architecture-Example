@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+// TODO: remove once moved to native Java 8 support (AS 3.0)
 apply plugin: 'me.tatarka.retrolambda'
 
 def versionMajor = 1
