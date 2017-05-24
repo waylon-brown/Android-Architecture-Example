@@ -1,5 +1,6 @@
 package com.redditapp.ui.screens.home.postlist;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
@@ -23,7 +24,7 @@ public class PostListViewModel extends ViewModel {
 	}
 
 	// Makes sure LiveData is set
-	public void init() {
+	public void init(LifecycleOwner lifecycleOwner) {
 		// TODO: add loading into activity
 //		getView().showLoading();
 
@@ -31,12 +32,12 @@ public class PostListViewModel extends ViewModel {
 		if (this.listing != null) {
 			return;
 		}
-		listing = rxApiCallers.getListing();
+		listing = rxApiCallers.getListing(lifecycleOwner);
 	}
 
-	public void loadNewListing() {
+	public void loadNewListing(LifecycleOwner lifecycleOwner) {
 		// TODO: see if this works without setting new listing
-		rxApiCallers.getListing();
+		rxApiCallers.getListing(lifecycleOwner);
 	}
 
 	public LiveData<Listing> getListing() {

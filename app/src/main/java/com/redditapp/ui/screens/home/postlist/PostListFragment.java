@@ -58,7 +58,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
         super.onActivityCreated(savedInstanceState);
         // Creates ViewModel or uses existing one. Automatically manages scoping of its lifetime.
         viewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
-        viewModel.init();
+        viewModel.init(this);
         viewModel.getListing().observe(this, listing -> {
             // update UI
             Timber.d("Update UI please!");
@@ -140,7 +140,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
      */
     @Override
     public void onRefresh() {
-        viewModel.loadNewListing();
+        viewModel.loadNewListing(this);
     }
 
     /**

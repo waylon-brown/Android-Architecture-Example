@@ -1,13 +1,8 @@
 package com.redditapp.data.api;
 
-import static android.arch.lifecycle.Lifecycle.State.DESTROYED;
-
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Context;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
@@ -18,9 +13,9 @@ import com.redditapp.dagger.modules.OauthNetworkModule;
 import com.redditapp.data.SharedPrefsHelper;
 import com.redditapp.data.models.AccessTokenResponse;
 import com.redditapp.data.models.listing.Listing;
-import com.redditapp.rxlifecycle.LifecycleTransformer;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import com.waylonbrown.lifecycleawarerx.LifecycleComposer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,8 +26,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
-import io.reactivex.SingleTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -75,7 +68,7 @@ public class RxApiCallers {
                 .timeout(API_CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .doOnSuccess(listing -> Listing.classifyPosts(listing))
                 .subscribeOn(Schedulers.io())
-                .compose(LifecycleTransformer.disposeOnLifecycleEvent(lifecycleOwner, Lifecycle.State.DESTROYED))
+                .compose(LifecycleComposer.bindLifeCycle(lifecycleOwner))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSingleObserver<Listing>() {
                     @Override
