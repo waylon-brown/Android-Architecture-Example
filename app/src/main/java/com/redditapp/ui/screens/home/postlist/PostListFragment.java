@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
 import com.redditapp.dagger.modules.ActivityModule;
@@ -29,6 +30,7 @@ import com.redditapp.ui.screens.comments.CommentsActivity;
 import com.redditapp.ui.screens.home.DaggerHomeComponent;
 import com.redditapp.ui.screens.home.HomeComponent;
 import com.redditapp.ui.screens.home.HomeView;
+import com.waylonbrown.lifecycleawarerx.LifecycleComposer;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -36,7 +38,8 @@ import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
-import retrofit2.http.HEAD;
+import io.reactivex.observers.DisposableSingleObserver;
+import timber.log.Timber;
 
 
 public class PostListFragment extends BaseFragment<HomeComponent> 
@@ -60,11 +63,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
         super.onActivityCreated(savedInstanceState);
         // Creates ViewModel or uses existing one. Automatically manages scoping of its lifetime.
         viewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
-        viewModel.init(this, rxApiCallers);
-        viewModel.getListing().observe(this, listing -> {
-            // update UI
-            showContent(listing);
-        });
+        onRefresh();
     }
 
     @Nullable
@@ -142,7 +141,27 @@ public class PostListFragment extends BaseFragment<HomeComponent>
      */
     @Override
     public void onRefresh() {
-        viewModel.loadNewListing(this);
+        viewModel.getListing(rxApiCallers)
+                .compose(LifecycleComposer.bindLifeCycle(this))
+                .subscribeWith(new DisposableSingleObserver<Listing>() {
+                    @Override
+                    public void onSuccess(Listing listing) {
+                        showContent(listing);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                        if (e instanceof HttpException) {
+                            HttpException exception = (HttpException)e;
+                            if (exception.code() == 403) {
+                                // Shouldn't happen
+                                Timber.wtf("403 - Access code was out of date.");
+                            }
+                        }
+                        showError(e);
+                    }
+                });
     }
 
     /**
