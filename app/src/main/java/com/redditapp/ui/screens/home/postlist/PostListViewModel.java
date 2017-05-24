@@ -9,6 +9,8 @@ import com.redditapp.data.models.listing.Listing;
 
 import javax.inject.Inject;
 
+import retrofit2.http.HEAD;
+
 /**
  * It is important that the ViewModel must not know about the View.
  */
@@ -18,13 +20,10 @@ public class PostListViewModel extends ViewModel {
 	// Life-cycle aware reactive model
 	private LiveData<Listing> listing;
 
-	@Inject
-	PostListViewModel(RxApiCallers rxApiCallers) {
-		this.rxApiCallers = rxApiCallers;
-	}
-
-	// Makes sure LiveData is set
-	public void init(LifecycleOwner lifecycleOwner) {
+	// TODO: We don't want this in our view, it should be injected into this ViewModel using a
+	// ViewModelProvider.Factory like here:
+	// https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample/app/src/main/java/com/android/example/github/viewmodel/GithubViewModelFactory.java
+	public void init(LifecycleOwner lifecycleOwner, RxApiCallers rxApiCallers) {
 		// TODO: add loading into activity
 //		getView().showLoading();
 
@@ -32,12 +31,13 @@ public class PostListViewModel extends ViewModel {
 		if (this.listing != null) {
 			return;
 		}
-		listing = rxApiCallers.getListing(lifecycleOwner);
+		this.rxApiCallers = rxApiCallers;
+		listing = loadNewListing(lifecycleOwner);
 	}
 
-	public void loadNewListing(LifecycleOwner lifecycleOwner) {
+	public LiveData<Listing> loadNewListing(LifecycleOwner lifecycleOwner) {
 		// TODO: see if this works without setting new listing
-		rxApiCallers.getListing(lifecycleOwner);
+		return rxApiCallers.getListing(lifecycleOwner);
 	}
 
 	public LiveData<Listing> getListing() {

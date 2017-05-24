@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import com.redditapp.R;
 import com.redditapp.RedditApplication;
 import com.redditapp.dagger.modules.ActivityModule;
+import com.redditapp.data.api.RxApiCallers;
 import com.redditapp.data.models.listing.Listing;
 import com.redditapp.data.models.listing.PostData;
 import com.redditapp.databinding.PostListFragmentBinding;
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
+import retrofit2.http.HEAD;
 
 
 public class PostListFragment extends BaseFragment<HomeComponent> 
@@ -49,6 +50,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     PostListViewModel viewModel;
 
     @Inject HomeView homeView;
+    @Inject RxApiCallers rxApiCallers;
 
     private ListingAdapter adapter;
     private boolean screenRotated = false;
@@ -58,10 +60,10 @@ public class PostListFragment extends BaseFragment<HomeComponent>
         super.onActivityCreated(savedInstanceState);
         // Creates ViewModel or uses existing one. Automatically manages scoping of its lifetime.
         viewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
-        viewModel.init(this);
+        viewModel.init(this, rxApiCallers);
         viewModel.getListing().observe(this, listing -> {
             // update UI
-            Timber.d("Update UI please!");
+            showContent(listing);
         });
     }
 
