@@ -1,1 +1,1 @@
-include ':app'//, ':lifecycleawarerx'
+include ':app'//, ':LifecycleAwareRx'
