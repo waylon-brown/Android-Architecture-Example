@@ -142,7 +142,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     @Override
     public void onRefresh() {
         viewModel.getListing(rxApiCallers)
-                .compose(LifecycleComposer.bindLifeCycle(this))
+                .compose(LifecycleComposer.Single.bindLifeCycle(this))
                 .subscribeWith(new DisposableSingleObserver<Listing>() {
                     @Override
                     public void onSuccess(Listing listing) {

@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Android-Architecture-Example.iml" filepath="$PROJECT_DIR$/Android-Architecture-Example.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../lifecycleawarerx/lifecycleawarerx.iml" filepath="$PROJECT_DIR$/../lifecycleawarerx/lifecycleawarerx.iml" />
     </modules>
   </component>
 </project>
