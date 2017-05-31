@@ -102,6 +102,9 @@ android {
         })
         testCompile 'junit:junit:4.12'
 
+//        compile 'com.github.WaylonBrown:LifecycleAwareRx:0.2'
+//        compile project(":LifecycleAwareRx")
+
         // Google
         compile 'com.android.support:appcompat-v7:25.3.1'
         compile 'com.android.support:design:25.3.1'
