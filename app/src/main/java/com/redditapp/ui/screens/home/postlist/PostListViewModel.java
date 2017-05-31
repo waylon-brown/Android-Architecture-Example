@@ -12,20 +12,14 @@ public class PostListViewModel extends ViewModel {
 	// Life-cycle aware reactive model
 	private LiveData<Listing> listing;
 
-	// TODO: We don't want this in our view, it should be injected into this ViewModel using a
-	// ViewModelProvider.Factory like here:
+	// TODO: It would be better to inject this with Dagger, but that's currently tricky. See:
 	// https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample/app/src/main/java/com/android/example/github/viewmodel/GithubViewModelFactory.java
 	public void init(RxApiCallers rxApiCallers) {
-		// TODO: add loading into activity
-//		getView().showLoading();
-
-		// This is important since the ViewModel is created per Fragment
-		if (this.listing != null) {
-			return;
-		}
 		this.rxApiCallers = rxApiCallers;
-		loadNewListing();
-		return;
+		// This is important since the ViewModel is created per Fragment
+		if (this.listing == null) {
+			loadNewListing();
+		}
 	}
 
 	public void loadNewListing() {
