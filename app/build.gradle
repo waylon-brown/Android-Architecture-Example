@@ -103,8 +103,8 @@ android {
         })
         testCompile 'junit:junit:4.12'
 
-        compile 'com.github.WaylonBrown:LifecycleAwareRx:0.1'
-//        compile project(":LifecycleAwareRx")
+//        compile 'com.github.WaylonBrown:LifecycleAwareRx:0.2'
+        compile project(":LifecycleAwareRx")
 
         compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
