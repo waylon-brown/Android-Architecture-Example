@@ -14,9 +14,8 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class PostListViewModel extends ViewModel {
 
-	// TODO: bring RxApiCallers into here and use factory to allow dagger use here like so:
+	// TODO: It would be better to inject this with Dagger, but that's currently tricky. See:
 	// https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample/app/src/main/java/com/android/example/github/viewmodel/GithubViewModelFactory.java
-
 	public Single<Listing> getListing(RxApiCallers rxApiCallers) {
 		return rxApiCallers
 				.getListing()
