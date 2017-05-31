@@ -60,9 +60,13 @@ public class PostListFragment extends BaseFragment<HomeComponent>
         viewModel = ViewModelProviders.of(this).get(PostListViewModel.class);
         viewModel.init(rxApiCallers);
         viewModel.getListing().observe(this, listing -> {
-            // update UI
-            showContent(listing);
-        });
+			// update UI
+            if (listing != null) {
+                PostListFragment.this.showContent(listing);
+            } else {
+                // Show error state
+            }
+		});
     }
 
     @Nullable

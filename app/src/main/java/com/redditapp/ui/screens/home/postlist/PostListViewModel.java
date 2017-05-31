@@ -14,9 +14,10 @@ public class PostListViewModel extends ViewModel {
 
 	// TODO: It would be better to inject this with Dagger, but that's currently tricky. See:
 	// https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample/app/src/main/java/com/android/example/github/viewmodel/GithubViewModelFactory.java
+
 	public void init(RxApiCallers rxApiCallers) {
 		this.rxApiCallers = rxApiCallers;
-		// This is important since the ViewModel is created per Fragment
+		// Only load completely new listing in init if not already done
 		if (this.listing == null) {
 			loadNewListing();
 		}

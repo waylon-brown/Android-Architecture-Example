@@ -60,7 +60,6 @@ public class RxApiCallers {
         }
         // First get access token, then get listing
         final MutableLiveData<Listing> liveData = new MutableLiveData<>();
-        //TODO: Because we're using Rx, we still need to manage lifecycle
         getUserAccessTokenObservable()
                 .flatMap(response -> getRedditFrontPageObservable(response.getAccessToken()))
                 .timeout(API_CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
@@ -116,7 +115,6 @@ public class RxApiCallers {
             MutableLiveData liveData = new MutableLiveData<Listing>();
             liveData.setValue(listing);
             return liveData;
-//            return Single.just(listing);
         } catch (IOException e) {
             e.printStackTrace();
         }
