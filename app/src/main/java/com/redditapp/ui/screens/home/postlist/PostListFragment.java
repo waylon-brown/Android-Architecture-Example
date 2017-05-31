@@ -30,7 +30,7 @@ import com.redditapp.ui.screens.comments.CommentsActivity;
 import com.redditapp.ui.screens.home.DaggerHomeComponent;
 import com.redditapp.ui.screens.home.HomeComponent;
 import com.redditapp.ui.screens.home.HomeView;
-import com.waylonbrown.lifecycleawarerx.LifecycleComposer;
+import com.waylonbrown.lifecycleawarerx.LifecycleBinder;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
-import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.observers.DisposableMaybeObserver;
 import timber.log.Timber;
 
 
@@ -142,8 +142,8 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     @Override
     public void onRefresh() {
         viewModel.getListing(rxApiCallers)
-                .compose(LifecycleComposer.Single.bindLifeCycle(this))
-                .subscribeWith(new DisposableSingleObserver<Listing>() {
+                .filter(LifecycleBinder.notDestroyed(this))
+                .compose(LifecycleBinder.subscribeWhenReady(this, new DisposableMaybeObserver<Listing>() {
                     @Override
                     public void onSuccess(Listing listing) {
                         showContent(listing);
@@ -161,7 +161,11 @@ public class PostListFragment extends BaseFragment<HomeComponent>
                         }
                         showError(e);
                     }
-                });
+
+                    @Override
+                    public void onComplete() {
+                    }
+                }));
     }
 
     /**
