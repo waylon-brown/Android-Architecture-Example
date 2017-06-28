@@ -143,7 +143,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     public void onRefresh() {
         viewModel.getListing(rxApiCallers)
                 .filter(LifecycleBinder.notDestroyed(this))
-                .compose(LifecycleBinder.subscribeWhenReady(this, new DisposableMaybeObserver<Listing>() {
+                .compose(LifecycleBinder.bind(this, new DisposableMaybeObserver<Listing>() {
                     @Override
                     public void onSuccess(Listing listing) {
                         showContent(listing);
