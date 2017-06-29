@@ -39,6 +39,7 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 
 import io.reactivex.observers.DisposableMaybeObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
 
@@ -142,8 +143,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     @Override
     public void onRefresh() {
         viewModel.getListing(rxApiCallers)
-                .filter(LifecycleBinder.notDestroyed(this))
-                .compose(LifecycleBinder.bind(this, new DisposableMaybeObserver<Listing>() {
+                .compose(LifecycleBinder.bind(this, new DisposableSingleObserver<Listing>() {
                     @Override
                     public void onSuccess(Listing listing) {
                         showContent(listing);
@@ -160,10 +160,6 @@ public class PostListFragment extends BaseFragment<HomeComponent>
                             }
                         }
                         showError(e);
-                    }
-
-                    @Override
-                    public void onComplete() {
                     }
                 }));
     }
