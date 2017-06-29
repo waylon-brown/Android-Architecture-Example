@@ -61,10 +61,10 @@ public class PostListFragment extends BaseFragment<HomeComponent>
         viewModel.init(rxApiCallers);
         viewModel.getListing().observe(this, listing -> {
 			// update UI
-            if (listing != null) {
+            if (listing != null && listing.getErrorState() == null) {
                 PostListFragment.this.showContent(listing);
             } else {
-                // Show error state
+                showError(listing == null ? null : listing.getErrorState());
             }
 		});
     }
@@ -76,6 +76,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_postlist, container, false);
         this.recyclerView = binding.recyclerView;
         this.swipeRefreshLayout = binding.swipeRefreshLayout;
+        this.swipeRefreshLayout.setRefreshing(true);
         return binding.getRoot();
     }
 
@@ -171,7 +172,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     }
 
     @Override
-    public void showError(Throwable throwable) {
+    public void showError(@Nullable Throwable throwable) {
         swipeRefreshLayout.setRefreshing(false);
 
         if (throwable instanceof UnknownHostException) {

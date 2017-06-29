@@ -53,7 +53,7 @@ public class RxApiCallers {
         this.moshi = moshi;
     }
 
-    public LiveData<Listing> getListing() {
+    public LiveData<Listing> getNewListing() {
         // Instead uses local JSON file
         if (BuildConfig.FLAVOR.equals("offline")) {
             return getOfflineListingFromJson();
@@ -82,7 +82,7 @@ public class RxApiCallers {
                                 Timber.wtf("403 - Access code was out of date.");
                             }
                         }
-                        liveData.setValue(null);
+                        liveData.setValue(new Listing(e));
                     }
                 });
         return liveData;

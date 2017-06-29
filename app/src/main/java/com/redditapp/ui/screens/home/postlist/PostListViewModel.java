@@ -24,7 +24,7 @@ public class PostListViewModel extends ViewModel {
 	}
 
 	public void loadNewListing() {
-		listing = rxApiCallers.getListing();
+		listing = rxApiCallers.getNewListing();
 	}
 
 	public LiveData<Listing> getListing() {

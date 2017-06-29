@@ -4,7 +4,8 @@ package com.redditapp.data.models.listing;
  * Use https://www.reddit.com/hot.json as an example listing response.
  */
 public class Listing {
-
+	
+	private transient Throwable errorState;	// Necessary for LiveData. Transient means Moshi ignores.
 	private final String kind;
 	private final ListingData data;
 
@@ -13,11 +14,17 @@ public class Listing {
 		this.data = listingData;
 	}
 
-	public static Listing copy(Listing other) {
-		if (other == null) {
-			return null;
-		}
-		return new Listing(other.getKind(), ListingData.copy(other.getData()));
+	/**
+	 * Necessary for LiveData.
+	 */
+	public Listing(final Throwable e) {
+		this.errorState = e;
+		this.kind = null;
+		this.data = null;
+	}
+
+	public Throwable getErrorState() {
+		return errorState;
 	}
 
 
@@ -29,6 +36,13 @@ public class Listing {
 		return data;
 	}
 
+	public static Listing copy(Listing other) {
+		if (other == null) {
+			return null;
+		}
+		return new Listing(other.getKind(), ListingData.copy(other.getData()));
+	}
+	
 	/**
 	 * Classify post type for {@link com.redditapp.ui.ListingAdapter} based on data from API.
      */
