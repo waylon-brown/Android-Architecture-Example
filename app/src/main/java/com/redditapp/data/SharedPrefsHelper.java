@@ -34,7 +34,7 @@ public class SharedPrefsHelper {
 		Calendar calendar = Calendar.getInstance();
 		long now = calendar.getTimeInMillis();
 		/**
-		 * We make the "expires in" time to be {@link #t TOKEN_EXPIRATION_THRESHHOLD_SECONDS} less than what it actually
+		 * We make the "expires in" time to be {@link #TOKEN_EXPIRATION_THRESHHOLD_SECONDS} less than what it actually
 		 * is to defensively make up for any lost time between the server registering this access token and
 		 * this call being made.
 		 */
