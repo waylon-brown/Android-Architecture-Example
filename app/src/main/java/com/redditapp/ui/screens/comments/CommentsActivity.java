@@ -129,7 +129,7 @@ public class CommentsActivity extends BaseActivity<CommentsComponent>
 	public void buildComponentAndInject() {
 		if (component == null) {
 			component = DaggerCommentsComponent.builder()
-					.applicationComponent(RedditApplication.getComponent())
+					.applicationComponent(RedditApplication.component)
 					.activityModule(new ActivityModule(this))
 					.build();
 		}

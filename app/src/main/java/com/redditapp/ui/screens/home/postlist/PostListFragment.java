@@ -38,7 +38,6 @@ import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
-import io.reactivex.observers.DisposableMaybeObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
@@ -92,7 +91,7 @@ public class PostListFragment extends BaseFragment<HomeComponent>
     public void buildComponentAndInject() {
         if (component == null) {
             component = DaggerHomeComponent.builder()
-                    .applicationComponent(RedditApplication.getComponent())
+                    .applicationComponent(RedditApplication.component)
                     .activityModule(new ActivityModule(getActivity()))
                     .build();
         }

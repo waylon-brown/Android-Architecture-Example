@@ -45,7 +45,7 @@ public class AccountFragment extends BaseFragment<HomeComponent> {
     public void buildComponentAndInject() {
         if (component == null) {
             component = DaggerHomeComponent.builder()
-                    .applicationComponent(RedditApplication.getComponent())
+                    .applicationComponent(RedditApplication.component)
                     .activityModule(new ActivityModule(getActivity()))
                     .build();
         }
