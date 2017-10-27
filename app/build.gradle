@@ -9,9 +9,9 @@ def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 // Duplicate dependency and tools versions
 def versions = [
-        sdk: 25,
-        support: "25.4.0",
-        arch: "1.0.0-alpha1",
+        sdk: 27,
+        support: "27.0.0",
+        arch: "1.0.0-rc1",
         butterknife: "8.4.0",
         retrofit: "2.1.0",
         dagger: "2.9",
@@ -86,7 +86,7 @@ android {
         
         implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-        implementation 'com.github.WaylonBrown:LifecycleAwareRx:0.3'
+        implementation 'com.github.WaylonBrown:LifecycleAwareRx:0.4'
 //        compile project(":LifecycleAwareRx")
 
         // Google
